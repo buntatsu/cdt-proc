@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="proc"
+         name="%extension.name"
+         point="org.eclipse.cdt.core.language">
+      <language
+            class="buntatsun.cdt.proc.ProCLanguage"
+            id="proc"
+            name="%language.name">
+         <contentType
+               id="buntatsun.cdt.proc.pcSource">
+         </contentType>
+         <contentType
+               id="buntatsun.cdt.proc.pcHeader">
+         </contentType>
+      </language>
+   </extension>
+
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+	  <content-type id="pcSource" name="%proc.source.name"
+         base-type="org.eclipse.cdt.core.cSource"
+         file-extensions="pc"
+         priority="high"/>
+   <content-type
+         base-type="buntatsun.cdt.proc.pcSource"
+         file-extensions="h"
+         id="pcHeader"
+         name="%proc.header.name"
+         priority="high">
+   </content-type>
+   </extension>
+
+</plugin>

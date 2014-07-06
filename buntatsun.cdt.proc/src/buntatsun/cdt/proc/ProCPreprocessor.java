@@ -35,11 +35,9 @@ public class ProCPreprocessor extends CPreprocessor {
 	protected Token internalFetchToken(ScannerContext uptoEndOfCtx,
 			int options, boolean withinExpansion)
 			throws OffsetLimitReachedException {
-
-		Token ppToken= fCurrentContext.currentLexerToken();
-
+        Token ppToken= fCurrentContext.currentLexerToken();
         while (true) {
-        	switch (ppToken.getType()) {
+			switch (ppToken.getType()) {
         	case Lexer.tBEFORE_INPUT:
     			ppToken= fCurrentContext.nextPPToken();
         		continue;
@@ -125,9 +123,11 @@ public class ProCPreprocessor extends CPreprocessor {
         		/*
         		 * ProC
         		 */
+        		Token tokenSql = null;
         		ppToken= fCurrentContext.nextPPToken();
             	if (ppToken.getType() == IProCToken.tSQL) {
-            		ppToken= fCurrentContext.nextPPToken();
+            		tokenSql = ppToken;		// save "SQL"
+            		ppToken = fCurrentContext.nextPPToken();
                 	final char[] ppName = ppToken.getCharImage();
                 	final int ppType = fPPKeywords.get(ppName);
 
@@ -142,13 +142,18 @@ public class ProCPreprocessor extends CPreprocessor {
                 		}
                 	}
 
-        			final char[] name= ppToken.getCharImage();
-        			int tokenType = fKeywords.get(name);
-        			if (tokenType == fKeywords.undefined) {
-        				tokenType = IProCToken.tUNDEFINED_;
-        			}
-    				ppToken.setType(tokenType);
-    				return ppToken;
+//        			final char[] name= ppToken.getCharImage();
+//        			int tokenType = fKeywords.get(name);
+//        			if (tokenType == fKeywords.undefined) {
+//        				tokenType = IProCToken.tUNDEFINED_;
+//        			}
+//    				ppToken.setType(tokenType);
+
+//    				return ppToken;
+
+//    				tokenSql.setNext(ppToken);
+//    				pushbackToken(ppToken);
+    				return tokenSql;		// return "SQL"
             	}
         		break;
 
@@ -160,21 +165,14 @@ public class ProCPreprocessor extends CPreprocessor {
 
 	@Override
 	public IToken nextToken() throws EndOfFileException {
-		//FIXEME bunbun neo
 		IToken t;
 		t = super.nextToken();
-//		System.out.println("nextToke(): Token(" + t.getType() + ")[" + t.getImage() + "]");
-
-//		if (t.getType() == IToken.tPROC_VARCHAR) {
-//			t.setType(IToken.tIDENTIFIER);
-//		}
 
 		if (t.getType() >= IProCToken.FIRST_IProCToken) {
 			// ";"まで読み飛ばし
-			while ((t = super.nextToken()).getType() != IToken.tSEMI) {
-				;
+			do {
 //				System.out.println("#### skipping... t type[" + t.getType() + "],image[" + t.getImage() + "]");
-			}
+			} while ((t = super.nextToken()).getType() != IToken.tSEMI);
 		}
 
 		return t;

@@ -8,6 +8,8 @@
  * Contributors:
  *     Andrew Gvozdev - initial API and implementation
  *******************************************************************************/
+
+//package org.eclipse.cdt.internal.core.language.settings.providers;
 package buntatsun.cdt.proc;
 
 import java.net.URI;
@@ -18,13 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.CCorePlugin;
-import org.eclipse.cdt.core.CCorePreferenceConstants;
 import org.eclipse.cdt.core.cdtvariables.CdtVariableException;
 import org.eclipse.cdt.core.cdtvariables.ICdtVariableManager;
-import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.cdt.core.parser.ExtendedScannerInfo;
-import org.eclipse.cdt.core.parser.IParserSettings;
-import org.eclipse.cdt.core.parser.ParserSettings;
+import org.eclipse.cdt.core.parser.IScannerInfo;
+import org.eclipse.cdt.core.parser.IScannerInfoProvider;
 import org.eclipse.cdt.core.settings.model.ICConfigurationDescription;
 import org.eclipse.cdt.core.settings.model.ICLanguageSettingEntry;
 import org.eclipse.cdt.core.settings.model.ICMacroEntry;
@@ -33,7 +33,7 @@ import org.eclipse.cdt.core.settings.model.ICProjectDescription;
 import org.eclipse.cdt.core.settings.model.ICSettingEntry;
 import org.eclipse.cdt.core.settings.model.util.CDataUtil;
 import org.eclipse.cdt.internal.core.language.settings.providers.LanguageSettingsProvidersSerializer;
-import org.eclipse.cdt.internal.core.model.CModelManager;
+import org.eclipse.cdt.internal.core.parser.ParserSettings2;
 import org.eclipse.cdt.internal.core.settings.model.CProjectDescriptionManager;
 import org.eclipse.cdt.utils.EFSExtensionManager;
 import org.eclipse.core.resources.IProject;
@@ -45,12 +45,21 @@ import org.eclipse.core.runtime.Path;
  * Original
  *   org.eclipse.cdt.internal.core.language.settings.providers.LanguageSettingsScannerInfoProvider
  */
+/**
+ * Implementation of {@link IScannerInfoProvider} backed by the list of
+ * language settings providers of "default settings configuration"
+ * (see {@link ICProjectDescription#getDefaultSettingConfiguration()}).
+ *
+ * @see IScannerInfo#getIncludePaths()
+ *
+ */
 @SuppressWarnings("restriction")
-public class LanguageSettingsScannerInfoProvider {
+public class LanguageSettingsScannerInfoProvider {//implements IScannerInfoProvider, ILanguageSettingsChangeListener {
 	private static final String FRAMEWORK_PRIVATE_HEADERS_INCLUDE = "/__framework__.framework/PrivateHeaders/__header__"; //$NON-NLS-1$
 	private static final String FRAMEWORK_HEADERS_INCLUDE = "/__framework__.framework/Headers/__header__"; //$NON-NLS-1$
 	private static final ExtendedScannerInfo DUMMY_SCANNER_INFO = new ExtendedScannerInfo();
 
+//	private Map<IResource, List<IScannerInfoChangeListener>> listenersMap = null;
 
 	public static ExtendedScannerInfo getScannerInformation(IResource rc, String[] languageIds) {
 		IProject project = rc.getProject();
@@ -115,23 +124,8 @@ public class LanguageSettingsScannerInfoProvider {
 		}
 
 		ExtendedScannerInfo extendedScannerInfo = new ExtendedScannerInfo(definedMacros, includePaths, macroFiles, includeFiles, includePathsLocal);
-
-		IParserSettings parserSettings = createParserSettings(project);
-		extendedScannerInfo.setParserSettings(parserSettings);
+		extendedScannerInfo.setParserSettings(new ParserSettings2(project));
 		return extendedScannerInfo;
-	}
-
-	private static IParserSettings createParserSettings(IProject project) {
-		ParserSettings parserSettings = new ParserSettings();
-		ICProject cProject = CModelManager.getDefault().create(project);
-		if (CCorePreferenceConstants.getPreference(CCorePreferenceConstants.SCALABILITY_SKIP_TRIVIAL_EXPRESSIONS, cProject,
-				CCorePreferenceConstants.DEFAULT_SCALABILITY_SKIP_TRIVIAL_EXPRESSIONS)) {
-			int maximumNumberOfTrivialExpressionsInAggregateInitializers = CCorePreferenceConstants.getPreference(
-				CCorePreferenceConstants.SCALABILITY_MAXIMUM_TRIVIAL_EXPRESSIONS, cProject,
-				CCorePreferenceConstants.DEFAULT_SCALABILITY_MAXIMUM_TRIVIAL_EXPRESSIONS);
-			parserSettings.setMaximumTrivialExpressionsInAggregateInitializers(maximumNumberOfTrivialExpressionsInAggregateInitializers);
-		}
-		return parserSettings;
 	}
 
 	private static String expandVariables(String pathStr, ICConfigurationDescription cfgDescription) {
@@ -202,7 +196,7 @@ public class LanguageSettingsScannerInfoProvider {
 		}
 
 		IPath locPath = new Path(location);
-		if (locPath.isAbsolute() && locPath.getDevice() == null) {
+		if (!locPath.isUNC() && locPath.isAbsolute() && locPath.getDevice() == null) {
 			IPath buildCWD = getBuildCWD(cfgDescription);
 			// prepend device (C:) for Windows
 			String device = buildCWD.getDevice();
@@ -300,6 +294,7 @@ public class LanguageSettingsScannerInfoProvider {
 		return (flags & bit) == bit;
 	}
 
+//	@Override
 //	public void subscribe(IResource resource, IScannerInfoChangeListener listener) {
 //		if (resource == null || listener == null) {
 //			return;
@@ -320,6 +315,7 @@ public class LanguageSettingsScannerInfoProvider {
 //		}
 //	}
 //
+//	@Override
 //	public void unsubscribe(IResource resource, IScannerInfoChangeListener listener) {
 //		if (resource == null || listener == null) {
 //			return;
@@ -334,6 +330,7 @@ public class LanguageSettingsScannerInfoProvider {
 //		}
 //	}
 //
+//	@Override
 //	public void handleEvent(ILanguageSettingsChangeEvent event) {
 //		if (listenersMap == null || listenersMap.isEmpty()) {
 //			return;
@@ -352,7 +349,7 @@ public class LanguageSettingsScannerInfoProvider {
 //							IResource rc = entry.getKey();
 //							List<IScannerInfoChangeListener> listeners = listenersMap.get(rc);
 //							if (listeners != null && !listeners.isEmpty()) {
-//								IScannerInfo info = getScannerInformation(rc, null);
+//								IScannerInfo info = getScannerInformation(rc);
 //								for (IScannerInfoChangeListener listener : listeners) {
 //									listener.changeNotification(rc, info);
 //								}
@@ -365,5 +362,4 @@ public class LanguageSettingsScannerInfoProvider {
 //			}
 //		}
 //	}
-
 }

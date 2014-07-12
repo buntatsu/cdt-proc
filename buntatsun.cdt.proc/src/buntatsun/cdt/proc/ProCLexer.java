@@ -45,25 +45,32 @@ public class ProCLexer extends Lexer {
 			case '\r':
 				continue;
 
+			case 'e':
 			case 'E':
 				// ProC EXEC check
-				if (d == 'X') {
+				if (d == 'x' || d == 'X') {
 					markPhase3();
-					if (nextCharPhase3() == 'E' & nextCharPhase3() == 'C') {
+					switch (nextCharPhase3()) {
+					case 'e':
+					case 'E':
 						switch (nextCharPhase3()) {
-			            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
-			            case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-			            case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
-			            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
-			            case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
-			            case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
-			            case '_':
-			            case '0': case '1': case '2': case '3': case '4':
-			            case '5': case '6': case '7': case '8': case '9':
-			            	break;
-		            	default:
-			            	// ProC EXEC
-			            	return newToken(IProCToken.tEXEC, start, 4);
+						case 'c':
+						case 'C':
+							switch (nextCharPhase3()) {
+				            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+				            case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+				            case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+				            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+				            case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+				            case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+				            case '_':
+				            case '0': case '1': case '2': case '3': case '4':
+				            case '5': case '6': case '7': case '8': case '9':
+				            	break;
+			            	default:
+				            	// ProC EXEC
+				            	return newToken(IProCToken.tEXEC, start, 4);
+							}
 						}
 					}
 					restorePhase3();
@@ -91,30 +98,33 @@ public class ProCLexer extends Lexer {
 				}
 				return identifier(start, 1);
 
-			case 'S':
-				// ProC SQL check
-				if (d == 'Q') {
-					markPhase3();
-					if (nextCharPhase3() == 'L') {
-						switch (nextCharPhase3()) {
-			            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
-			            case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-			            case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
-			            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
-			            case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
-			            case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
-			            case '_':
-			            case '0': case '1': case '2': case '3': case '4':
-			            case '5': case '6': case '7': case '8': case '9':
-			            	break;
-		            	default:
-			            	// ProC SQL
-			            	return newToken(IProCToken.tSQL, start, 3);
-						}
-					}
-					restorePhase3();
-				}
-				return identifier(start, 1);
+//			case 's':
+//			case 'S':
+//				// ProC SQL check
+//				if (d == 'q' || d == 'Q') {
+//					markPhase3();
+//					switch (nextCharPhase3()) {
+//					case 'l':
+//					case 'L':
+//						switch (nextCharPhase3()) {
+//			            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+//			            case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+//			            case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+//			            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+//			            case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+//			            case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+//			            case '_':
+//			            case '0': case '1': case '2': case '3': case '4':
+//			            case '5': case '6': case '7': case '8': case '9':
+//			            	break;
+//		            	default:
+//			            	// ProC SQL
+//			            	return newToken(IProCToken.tSQL, start, 3);
+//						}
+//					}
+//					restorePhase3();
+//				}
+//				return identifier(start, 1);
 
 			case 'u':
 			case 'U':
@@ -173,12 +183,12 @@ public class ProCLexer extends Lexer {
 			case '\'':
 				return charLiteral(start, IToken.tCHAR);
 
-			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+			case 'a': case 'b': case 'c': case 'd':           case 'f': case 'g': case 'h': case 'i':
 			case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
 			case 's': case 't':           case 'v': case 'w': case 'x': case 'y': case 'z':
 			case 'A': case 'B': case 'C': case 'D':           case 'F': case 'G': case 'H': case 'I':
 			case 'J': case 'K':           case 'M': case 'N': case 'O': case 'P': case 'Q':
-			          case 'T':           case 'V': case 'W': case 'X': case 'Y': case 'Z':
+			case 'S': case 'T':           case 'V': case 'W': case 'X': case 'Y': case 'Z':
 			case '_':
 				return identifier(start, 1);
 
@@ -516,7 +526,7 @@ public class ProCLexer extends Lexer {
             	break;
 
             case '.':
-            	// INCLUDE処理中は "."をトークンの区切りにしない
+            	// ProC INCLUDE処理中は "."をトークンの区切りにしない
             	if (!fInsideIncludeDirective) {
             		isPartOfIdentifier= false;
             	}

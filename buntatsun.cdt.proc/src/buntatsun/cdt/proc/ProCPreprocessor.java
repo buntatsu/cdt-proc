@@ -1,7 +1,6 @@
 package buntatsun.cdt.proc;
 
 import org.eclipse.cdt.core.dom.parser.IScannerExtensionConfiguration;
-import org.eclipse.cdt.core.parser.EndOfFileException;
 import org.eclipse.cdt.core.parser.FileContent;
 import org.eclipse.cdt.core.parser.IParserLogService;
 import org.eclipse.cdt.core.parser.IProblem;
@@ -10,6 +9,7 @@ import org.eclipse.cdt.core.parser.IToken;
 import org.eclipse.cdt.core.parser.IncludeFileContentProvider;
 import org.eclipse.cdt.core.parser.OffsetLimitReachedException;
 import org.eclipse.cdt.core.parser.ParserLanguage;
+import org.eclipse.cdt.core.parser.util.CharArrayIntMap;
 import org.eclipse.cdt.internal.core.parser.scanner.ASTInclusionStatement;
 import org.eclipse.cdt.internal.core.parser.scanner.AbstractCharArray;
 import org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor;
@@ -29,6 +29,50 @@ public class ProCPreprocessor extends CPreprocessor {
 			IScannerExtensionConfiguration configuration,
 			IncludeFileContentProvider readerFactory) {
 		super(fileContent, info, language, log, configuration, readerFactory);
+
+		addProCKeywords();
+	}
+
+	private CharArrayIntMap fProCKeywords = new CharArrayIntMap(10, -1);
+
+	protected void addProCKeywords() {
+    	fProCKeywords.put(ProCKeywords.cp_EXEC, IProCToken.tEXEC);
+    	fProCKeywords.put(ProCKeywords.cp_exec, IProCToken.tEXEC);
+    	fProCKeywords.put(ProCKeywords.cp_SQL, IProCToken.tSQL);
+    	fProCKeywords.put(ProCKeywords.cp_sql, IProCToken.tSQL);
+    	fProCKeywords.put(ProCKeywords.cp_INCLUDE , IProCToken.tINCLUDE);
+    	fProCKeywords.put(ProCKeywords.cp_include , IProCToken.tINCLUDE);
+
+    	fProCKeywords.put(ProCKeywords.cp_BEGIN, IProCToken.tBEGIN);
+    	fProCKeywords.put(ProCKeywords.cp_begin, IProCToken.tBEGIN);
+    	fProCKeywords.put(ProCKeywords.cp_END, IProCToken.tEND);
+    	fProCKeywords.put(ProCKeywords.cp_end, IProCToken.tEND);
+    	fProCKeywords.put(ProCKeywords.cp_DECLARE, IProCToken.tDECLARE);
+    	fProCKeywords.put(ProCKeywords.cp_declare, IProCToken.tDECLARE);
+    	fProCKeywords.put(ProCKeywords.cp_SECTION, IProCToken.tSECTION);
+    	fProCKeywords.put(ProCKeywords.cp_section, IProCToken.tSECTION);
+    	fProCKeywords.put(ProCKeywords.cp_CURSOR, IProCToken.tCURSOR);
+    	fProCKeywords.put(ProCKeywords.cp_cursor, IProCToken.tCURSOR);
+    	fProCKeywords.put(ProCKeywords.cp_FOR, IProCToken.tFOR);
+    	fProCKeywords.put(ProCKeywords.cp_for, IProCToken.tFOR);
+    	fProCKeywords.put(ProCKeywords.cp_OPEN, IProCToken.tOPEN);
+    	fProCKeywords.put(ProCKeywords.cp_open, IProCToken.tOPEN);
+    	fProCKeywords.put(ProCKeywords.cp_CLOSE, IProCToken.tCLOSE);
+    	fProCKeywords.put(ProCKeywords.cp_close, IProCToken.tCLOSE);
+    	fProCKeywords.put(ProCKeywords.cp_FETCH, IProCToken.tFETCH);
+    	fProCKeywords.put(ProCKeywords.cp_fetch, IProCToken.tFETCH);
+    	fProCKeywords.put(ProCKeywords.cp_INTO, IProCToken.tINTO);
+    	fProCKeywords.put(ProCKeywords.cp_into, IProCToken.tINTO);
+    	fProCKeywords.put(ProCKeywords.sq_SELECT, IProCToken.tSELECT);
+    	fProCKeywords.put(ProCKeywords.sq_select, IProCToken.tSELECT);
+    	fProCKeywords.put(ProCKeywords.sq_DELETE, IProCToken.tDELETE);
+    	fProCKeywords.put(ProCKeywords.sq_delete, IProCToken.tDELETE);
+    	fProCKeywords.put(ProCKeywords.sq_INSERT, IProCToken.tINSERT);
+    	fProCKeywords.put(ProCKeywords.sq_insert, IProCToken.tINSERT);
+    	fProCKeywords.put(ProCKeywords.sq_UPDATE, IProCToken.tUPDATE);
+    	fProCKeywords.put(ProCKeywords.sq_update, IProCToken.tUPDATE);
+    	fProCKeywords.put(ProCKeywords.sq_TRUNCATE, IProCToken.tTRUNCATE);
+    	fProCKeywords.put(ProCKeywords.sq_truncate, IProCToken.tTRUNCATE);
 	}
 
 	@Override
@@ -124,12 +168,23 @@ public class ProCPreprocessor extends CPreprocessor {
         		 * ProC
         		 */
         		Token tokenSql = null;
+
         		ppToken= fCurrentContext.nextPPToken();
-            	if (ppToken.getType() == IProCToken.tSQL) {
-            		tokenSql = ppToken;		// save "SQL"
+
+//TODO EXEC<LF>SQL
+        		if (ppToken.getType() == Lexer.tNEWLINE) {
+            		ppToken= fCurrentContext.nextPPToken();
+        		}
+
+//        		if (ppToken.getType() == IProCToken.tSQL) {
+        		final int ppt = fProCKeywords.get(ppToken.getCharImage());
+           		if (ppt == IProCToken.tSQL) {
+           			ppToken.setType(ppt);
+
+           			tokenSql = ppToken;		// save "SQL"
             		ppToken = fCurrentContext.nextPPToken();
                 	final char[] ppName = ppToken.getCharImage();
-                	final int ppType = fPPKeywords.get(ppName);
+                	final int ppType = fProCKeywords.get(ppName);
 
                 	switch (ppType) {
                 	case IProCToken.tINCLUDE:
@@ -142,41 +197,25 @@ public class ProCPreprocessor extends CPreprocessor {
                 		}
                 	}
 
-//        			final char[] name= ppToken.getCharImage();
-//        			int tokenType = fKeywords.get(name);
-//        			if (tokenType == fKeywords.undefined) {
-//        				tokenType = IProCToken.tUNDEFINED_;
-//        			}
-//    				ppToken.setType(tokenType);
-
-//    				return ppToken;
-
-//    				tokenSql.setNext(ppToken);
-//    				pushbackToken(ppToken);
-    				return tokenSql;		// return "SQL"
+    				return tokenSql;	// return "SQL"
             	}
+//FIXME
+//           	switch (ppToken.getType()) {
+////        	case Lexer.tNEWLINE:
+//            	case Lexer.tOTHER_CHARACTER:
+//            	case IToken.tEND_OF_INPUT:
+//           		continue;
+//           	}
+
+//FIXME
         		break;
+//           	return ppToken;	//<- endless loop?
 
         	}
         	fCurrentContext.nextPPToken();
         	return ppToken;
         }
     }
-
-	@Override
-	public IToken nextToken() throws EndOfFileException {
-		IToken t;
-		t = super.nextToken();
-
-		if (t.getType() >= IProCToken.FIRST_IProCToken) {
-			// ";"まで読み飛ばし
-			do {
-//				System.out.println("#### skipping... t type[" + t.getType() + "],image[" + t.getImage() + "]");
-			} while ((t = super.nextToken()).getType() != IToken.tSEMI);
-		}
-
-		return t;
-	}
 
 	@Override
 	protected Lexer newLexer(char[] input, LexerOptions options, ILexerLog log, Object source) {

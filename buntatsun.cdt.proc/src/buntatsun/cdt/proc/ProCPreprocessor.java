@@ -10,6 +10,7 @@ import org.eclipse.cdt.core.parser.IncludeFileContentProvider;
 import org.eclipse.cdt.core.parser.OffsetLimitReachedException;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 import org.eclipse.cdt.core.parser.util.CharArrayIntMap;
+import org.eclipse.cdt.core.parser.util.CharArrayMap;
 import org.eclipse.cdt.internal.core.parser.scanner.ASTInclusionStatement;
 import org.eclipse.cdt.internal.core.parser.scanner.AbstractCharArray;
 import org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor;
@@ -28,8 +29,10 @@ public class ProCPreprocessor extends CPreprocessor {
 			ParserLanguage language, IParserLogService log,
 			IScannerExtensionConfiguration configuration,
 			IncludeFileContentProvider readerFactory) {
+
 		super(fileContent, info, language, log, configuration, readerFactory);
 
+		addProCHeaderReplaces();
 		addProCKeywords();
 	}
 
@@ -63,6 +66,7 @@ public class ProCPreprocessor extends CPreprocessor {
     	fProCKeywords.put(ProCKeywords.cp_fetch, IProCToken.tFETCH);
     	fProCKeywords.put(ProCKeywords.cp_INTO, IProCToken.tINTO);
     	fProCKeywords.put(ProCKeywords.cp_into, IProCToken.tINTO);
+
     	fProCKeywords.put(ProCKeywords.sq_SELECT, IProCToken.tSELECT);
     	fProCKeywords.put(ProCKeywords.sq_select, IProCToken.tSELECT);
     	fProCKeywords.put(ProCKeywords.sq_DELETE, IProCToken.tDELETE);
@@ -73,6 +77,22 @@ public class ProCPreprocessor extends CPreprocessor {
     	fProCKeywords.put(ProCKeywords.sq_update, IProCToken.tUPDATE);
     	fProCKeywords.put(ProCKeywords.sq_TRUNCATE, IProCToken.tTRUNCATE);
     	fProCKeywords.put(ProCKeywords.sq_truncate, IProCToken.tTRUNCATE);
+	}
+
+	private CharArrayMap<char[]> fHeaderReplaces = new CharArrayMap<>(8);
+
+	protected void addProCHeaderReplaces() {
+		fHeaderReplaces.put(ProCKeywords.rh_ORACA_H, ProCKeywords.rh_oraca_h);
+		fHeaderReplaces.put(ProCKeywords.rh_SQLCA_H, ProCKeywords.rh_sqlca_h);
+		fHeaderReplaces.put(ProCKeywords.rh_SQLDA_H, ProCKeywords.rh_sqlda_h);
+
+		fHeaderReplaces.put(ProCKeywords.rh_ORACA, ProCKeywords.rh_oraca_h);
+		fHeaderReplaces.put(ProCKeywords.rh_SQLCA, ProCKeywords.rh_sqlca_h);
+		fHeaderReplaces.put(ProCKeywords.rh_SQLDA, ProCKeywords.rh_sqlda_h);
+
+		fHeaderReplaces.put(ProCKeywords.rh_oraca, ProCKeywords.rh_oraca_h);
+		fHeaderReplaces.put(ProCKeywords.rh_sqlca, ProCKeywords.rh_sqlca_h);
+		fHeaderReplaces.put(ProCKeywords.rh_sqlda, ProCKeywords.rh_sqlda_h);
 	}
 
 	@Override
@@ -176,7 +196,6 @@ public class ProCPreprocessor extends CPreprocessor {
             		ppToken= fCurrentContext.nextPPToken();
         		}
 
-//        		if (ppToken.getType() == IProCToken.tSQL) {
         		final int ppt = fProCKeywords.get(ppToken.getCharImage());
            		if (ppt == IProCToken.tSQL) {
            			ppToken.setType(ppt);
@@ -216,6 +235,18 @@ public class ProCPreprocessor extends CPreprocessor {
         	return ppToken;
         }
     }
+
+	@Override
+    protected char[] extractHeaderName(
+    		final char[] image, final char startDelim, final char endDelim, int[] offsets) {
+
+		char[] headerName = super.extractHeaderName(image, startDelim, endDelim, offsets);
+		char[] headerNameConv = null;
+
+		headerNameConv = fHeaderReplaces.get(headerName);
+
+		return headerNameConv == null ? headerName : headerNameConv;
+	}
 
 	@Override
 	protected Lexer newLexer(char[] input, LexerOptions options, ILexerLog log, Object source) {

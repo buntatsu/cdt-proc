@@ -17,6 +17,8 @@ public class ProCKeywords {
 
 			cp_EXEC = "EXEC".toCharArray(),
 			cp_exec = "exec".toCharArray(),
+			cp_ORACLE = "ORACLE".toCharArray(),
+			cp_oracle = "oracle".toCharArray(),
 			cp_SQL = "SQL".toCharArray(),
 			cp_sql = "sql".toCharArray(),
 			cp_INCLUDE = "INCLUDE".toCharArray(),

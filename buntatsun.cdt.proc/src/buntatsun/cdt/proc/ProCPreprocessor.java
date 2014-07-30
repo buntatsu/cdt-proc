@@ -41,6 +41,8 @@ public class ProCPreprocessor extends CPreprocessor {
 	protected void addProCKeywords() {
     	fProCKeywords.put(ProCKeywords.cp_EXEC, IProCToken.tEXEC);
     	fProCKeywords.put(ProCKeywords.cp_exec, IProCToken.tEXEC);
+    	fProCKeywords.put(ProCKeywords.cp_ORACLE, IProCToken.tORACLE);
+    	fProCKeywords.put(ProCKeywords.cp_oracle, IProCToken.tORACLE);
     	fProCKeywords.put(ProCKeywords.cp_SQL, IProCToken.tSQL);
     	fProCKeywords.put(ProCKeywords.cp_sql, IProCToken.tSQL);
     	fProCKeywords.put(ProCKeywords.cp_INCLUDE , IProCToken.tINCLUDE);
@@ -197,10 +199,12 @@ public class ProCPreprocessor extends CPreprocessor {
         		}
 
         		final int ppt = fProCKeywords.get(ppToken.getCharImage());
-           		if (ppt == IProCToken.tSQL) {
+        		switch (ppt) {
+        		case IProCToken.tSQL:
+        		case IProCToken.tORACLE:
            			ppToken.setType(ppt);
 
-           			tokenSql = ppToken;		// save "SQL"
+           			tokenSql = ppToken;		// save "SQL","ORACLE"
             		ppToken = fCurrentContext.nextPPToken();
                 	final char[] ppName = ppToken.getCharImage();
                 	final int ppType = fProCKeywords.get(ppName);
@@ -216,7 +220,7 @@ public class ProCPreprocessor extends CPreprocessor {
                 		}
                 	}
 
-    				return tokenSql;	// return "SQL"
+    				return tokenSql;	// return "SQL","ORACLE"
             	}
 //FIXME
 //           	switch (ppToken.getType()) {

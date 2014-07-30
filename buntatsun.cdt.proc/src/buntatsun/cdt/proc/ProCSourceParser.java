@@ -33,7 +33,9 @@ public class ProCSourceParser extends GNUCSourceParser {
 
     @Override
 	protected IASTStatement statement() throws EndOfFileException, BacktrackException {
-		if (LT(1) == IProCToken.tSQL) {
+		switch (LT(1)) {
+		case IProCToken.tSQL:
+		case IProCToken.tORACLE:
         	/*
 			 * ProC
 			 */
@@ -54,8 +56,6 @@ public class ProCSourceParser extends GNUCSourceParser {
 		IASTStatement stmt = null;
 
 		while ((t = consume()).getType() != IToken.tSEMI) {
-//			System.out.println("#### skipping... t type[" + t.getType() + "],image[" + t.getImage() + "]");
-
 			switch (t.getType()) {
 			case IToken.tCOLON:
 				if (stmt == null) {
@@ -88,7 +88,9 @@ public class ProCSourceParser extends GNUCSourceParser {
     @Override
     protected IASTDeclaration[] problemDeclaration(int offset, BacktrackException bt, DeclarationOptions option) {
 			try {
-				if (LT(1) == IProCToken.tSQL) {
+				switch (LT(1)) {
+				case IProCToken.tSQL:
+				case IProCToken.tORACLE:
 					// skip to semicolon
 					while (consume().getType() != IToken.tSEMI) {
 						;

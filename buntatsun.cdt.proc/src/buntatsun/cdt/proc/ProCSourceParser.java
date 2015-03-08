@@ -21,35 +21,35 @@ import org.eclipse.cdt.internal.core.dom.parser.c.GNUCSourceParser;
 public class ProCSourceParser extends GNUCSourceParser {
 
 	public ProCSourceParser(IScanner scanner, ParserMode parserMode,
-            IParserLogService logService, ICParserExtensionConfiguration config) {
-    	this(scanner, parserMode, logService, config, null);
-    }
+			IParserLogService logService, ICParserExtensionConfiguration config) {
+		this(scanner, parserMode, logService, config, null);
+	}
 
-    public ProCSourceParser(IScanner scanner, ParserMode parserMode,
-            IParserLogService logService, ICParserExtensionConfiguration config,
-            IIndex index) {
-        super(scanner, parserMode, logService, config, index);
-    }
+	public ProCSourceParser(IScanner scanner, ParserMode parserMode,
+			IParserLogService logService, ICParserExtensionConfiguration config,
+			IIndex index) {
+		super(scanner, parserMode, logService, config, index);
+	}
 
-    @Override
+	@Override
 	protected IASTStatement statement() throws EndOfFileException, BacktrackException {
 		switch (LT(1)) {
 		case IProCToken.tSQL:
 		case IProCToken.tORACLE:
-        	/*
+			/*
 			 * ProC
 			 */
-            return parseSqlStatement();
+			return parseSqlStatement();
 		}
 
 		return super.statement();
-    }
+	}
 
-    /*
+	/*
 	 * ProC
 	 */
-    protected IASTStatement parseSqlStatement() throws EndOfFileException, BacktrackException {
-    	IToken t1, t;
+	protected IASTStatement parseSqlStatement() throws EndOfFileException, BacktrackException {
+		IToken t1, t;
 
 		t1 = consume();
 
@@ -62,18 +62,18 @@ public class ProCSourceParser extends GNUCSourceParser {
 					stmt = nodeFactory.newCompoundStatement();
 				}
 
-	    		IASTExpression expr = expression(ExprKind.eAssignment);
+				IASTExpression expr = expression(ExprKind.eAssignment);
 
-	    		// fake ++ operation. (to avoid syntax error)
-	    		BinaryOperator lastOperator = new BinaryOperator(null, expr, IToken.tPLUSASSIGN, 21, 20);
-	    		IASTExpression expr_fake = buildExpression(lastOperator, expr);
+				// fake ++ operation. (to avoid syntax error)
+				BinaryOperator lastOperator = new BinaryOperator(null, expr, IToken.tPLUSASSIGN, 21, 20);
+				IASTExpression expr_fake = buildExpression(lastOperator, expr);
 
-	    		IASTExpressionStatement expst = nodeFactory.newExpressionStatement(expr_fake);
-	    		expst.setParent(stmt);
-	    		((ASTNode) expst).setOffsetAndLength((ASTNode) expr);
+				IASTExpressionStatement expst = nodeFactory.newExpressionStatement(expr_fake);
+				expst.setParent(stmt);
+				((ASTNode) expst).setOffsetAndLength((ASTNode) expr);
 
-	    		((IASTCompoundStatement) stmt).addStatement(expst);
-	    		break;
+				((IASTCompoundStatement) stmt).addStatement(expst);
+				break;
 			}
 		}
 
@@ -83,24 +83,24 @@ public class ProCSourceParser extends GNUCSourceParser {
 
 		((ASTNode) stmt).setOffsetAndLength(t1.getOffset(), t.getEndOffset() - t1.getOffset());
 		return stmt;
-    }
+	}
 
-    @Override
-    protected IASTDeclaration[] problemDeclaration(int offset, BacktrackException bt, DeclarationOptions option) {
-			try {
-				switch (LT(1)) {
-				case IProCToken.tSQL:
-				case IProCToken.tORACLE:
-					// skip to semicolon
-					while (consume().getType() != IToken.tSEMI) {
-						;
-					}
-
-					return new IASTDeclaration[] {};
+	@Override
+	protected IASTDeclaration[] problemDeclaration(int offset, BacktrackException bt, DeclarationOptions option) {
+		try {
+			switch (LT(1)) {
+			case IProCToken.tSQL:
+			case IProCToken.tORACLE:
+				// skip to semicolon
+				while (consume().getType() != IToken.tSEMI) {
+					;
 				}
-			} catch (EndOfFileException e) {
-				return  new IASTDeclaration[] {};
+
+				return new IASTDeclaration[] {};
 			}
-    	return super.problemDeclaration(offset, bt, option);
-    }
+		} catch (EndOfFileException e) {
+			return new IASTDeclaration[] {};
+		}
+		return super.problemDeclaration(offset, bt, option);
+	}
 }

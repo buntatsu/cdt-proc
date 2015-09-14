@@ -26,6 +26,7 @@ public class ProCLexer extends Lexer {
 		super(input, options, log, source);
 	}
 
+	public boolean isInExecSqlBlock = false;
 	@Override
 	protected Token fetchToken() throws OffsetLimitReachedException {
 		while (true) {
@@ -48,7 +49,58 @@ public class ProCLexer extends Lexer {
 			case 'e':
 			case 'E':
 				// ProC EXEC check
-				if (d == 'x' || d == 'X') {
+				switch (d) {
+				case 'n':
+				case 'N':
+					markPhase3();
+					switch (nextCharPhase3()) {
+					case 'd':
+					case 'D':
+						switch (nextCharPhase3()) {
+						case '-':
+							switch (nextCharPhase3()) {
+							case 'e':
+							case 'E':
+								switch (nextCharPhase3()) {
+								case 'x':
+								case 'X':
+									switch (nextCharPhase3()) {
+									case 'e':
+									case 'E':
+										switch (nextCharPhase3()) {
+										case 'c':
+										case 'C':
+											switch (nextCharPhase3()) {
+											case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+											case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+											case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+											case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+											case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+											case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+											case '_':
+											case '0': case '1': case '2': case '3': case '4':
+											case '5': case '6': case '7': case '8': case '9':
+												break;
+											default:
+												// ProC END-EXEC
+												return newToken(IProCToken.tEND_EXEC, start, 8);
+											}
+											break;
+										}
+										break;
+									}
+									break;
+								}
+								break;
+							}
+							break;
+						}
+						break;
+					}
+					restorePhase3();
+					break;
+				case 'x':
+				case 'X':
 					markPhase3();
 					switch (nextCharPhase3()) {
 					case 'e':
@@ -57,24 +109,53 @@ public class ProCLexer extends Lexer {
 						case 'c':
 						case 'C':
 							switch (nextCharPhase3()) {
-				            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
-				            case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-				            case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
-				            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
-				            case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
-				            case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
-				            case '_':
-				            case '0': case '1': case '2': case '3': case '4':
-				            case '5': case '6': case '7': case '8': case '9':
-				            	break;
-			            	default:
-				            	// ProC EXEC
-				            	return newToken(IProCToken.tEXEC, start, 4);
+							case 'u':
+							case 'U':
+								switch (nextCharPhase3()) {
+								case 't':
+								case 'T':
+									switch (nextCharPhase3()) {
+									case 'e':
+									case 'E':
+										switch (nextCharPhase3()) {
+										case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+										case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+										case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
+										case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+										case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+										case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+										case '_':
+										case '0': case '1': case '2': case '3': case '4':
+										case '5': case '6': case '7': case '8': case '9':
+											break;
+										default:
+											// ProC EXECUTE
+											return newToken(IProCToken.tEXECUTE, start, 7);
+										}
+									}
+									break;
+								}
+								break;
+							case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+							case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+							case 's': case 't':           case 'v': case 'w': case 'x': case 'y': case 'z':
+							case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+							case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+							case 'S': case 'T':           case 'V': case 'W': case 'X': case 'Y': case 'Z':
+							case '_':
+							case '0': case '1': case '2': case '3': case '4':
+							case '5': case '6': case '7': case '8': case '9':
+								break;
+							default:
+								// ProC EXEC
+								return newToken(IProCToken.tEXEC, start, 4);
 							}
 						}
 					}
 					restorePhase3();
+					break;
 				}
+
 				return identifier(start, 1);
 
 			case 'L':
@@ -267,6 +348,9 @@ public class ProCLexer extends Lexer {
 				case '>':
 					nextCharPhase3();
 					return newDigraphToken(IToken.tRBRACKET, start);
+				case '=':
+					nextCharPhase3();
+					return newToken(IProCToken.tASSIGN, start);
 				}
 				return newToken(IToken.tCOLON, start);
 
@@ -293,8 +377,12 @@ public class ProCLexer extends Lexer {
 						return newToken(IToken.tARROWSTAR, start);
 					}
 					return newToken(IToken.tARROW, start);
-
 				case '-':
+					if (isInExecSqlBlock) {
+						nextCharPhase3();
+						lineComment(start);
+						continue;
+					}
 					nextCharPhase3();
 					return newToken(IToken.tDECR, start);
 				case '=':

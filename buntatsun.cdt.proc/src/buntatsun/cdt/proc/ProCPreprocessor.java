@@ -39,46 +39,51 @@ public class ProCPreprocessor extends CPreprocessor {
 	private CharArrayIntMap fProCKeywords = new CharArrayIntMap(10, -1);
 
 	protected void addProCKeywords() {
-    	fProCKeywords.put(ProCKeywords.cp_EXEC, IProCToken.tEXEC);
-    	fProCKeywords.put(ProCKeywords.cp_exec, IProCToken.tEXEC);
-    	fProCKeywords.put(ProCKeywords.cp_ORACLE, IProCToken.tORACLE);
-    	fProCKeywords.put(ProCKeywords.cp_oracle, IProCToken.tORACLE);
-    	fProCKeywords.put(ProCKeywords.cp_SQL, IProCToken.tSQL);
-    	fProCKeywords.put(ProCKeywords.cp_sql, IProCToken.tSQL);
-    	fProCKeywords.put(ProCKeywords.cp_INCLUDE , IProCToken.tINCLUDE);
-    	fProCKeywords.put(ProCKeywords.cp_include , IProCToken.tINCLUDE);
+		fProCKeywords.put(ProCKeywords.cp_EXEC, IProCToken.tEXEC);
+		fProCKeywords.put(ProCKeywords.cp_exec, IProCToken.tEXEC);
+		fProCKeywords.put(ProCKeywords.cp_ORACLE, IProCToken.tORACLE);
+		fProCKeywords.put(ProCKeywords.cp_oracle, IProCToken.tORACLE);
+		fProCKeywords.put(ProCKeywords.cp_SQL, IProCToken.tSQL);
+		fProCKeywords.put(ProCKeywords.cp_sql, IProCToken.tSQL);
+		fProCKeywords.put(ProCKeywords.cp_INCLUDE , IProCToken.tINCLUDE);
+		fProCKeywords.put(ProCKeywords.cp_include , IProCToken.tINCLUDE);
 
-    	fProCKeywords.put(ProCKeywords.cp_BEGIN, IProCToken.tBEGIN);
-    	fProCKeywords.put(ProCKeywords.cp_begin, IProCToken.tBEGIN);
-    	fProCKeywords.put(ProCKeywords.cp_END, IProCToken.tEND);
-    	fProCKeywords.put(ProCKeywords.cp_end, IProCToken.tEND);
-    	fProCKeywords.put(ProCKeywords.cp_DECLARE, IProCToken.tDECLARE);
-    	fProCKeywords.put(ProCKeywords.cp_declare, IProCToken.tDECLARE);
-    	fProCKeywords.put(ProCKeywords.cp_SECTION, IProCToken.tSECTION);
-    	fProCKeywords.put(ProCKeywords.cp_section, IProCToken.tSECTION);
-    	fProCKeywords.put(ProCKeywords.cp_CURSOR, IProCToken.tCURSOR);
-    	fProCKeywords.put(ProCKeywords.cp_cursor, IProCToken.tCURSOR);
-    	fProCKeywords.put(ProCKeywords.cp_FOR, IProCToken.tFOR);
-    	fProCKeywords.put(ProCKeywords.cp_for, IProCToken.tFOR);
-    	fProCKeywords.put(ProCKeywords.cp_OPEN, IProCToken.tOPEN);
-    	fProCKeywords.put(ProCKeywords.cp_open, IProCToken.tOPEN);
-    	fProCKeywords.put(ProCKeywords.cp_CLOSE, IProCToken.tCLOSE);
-    	fProCKeywords.put(ProCKeywords.cp_close, IProCToken.tCLOSE);
-    	fProCKeywords.put(ProCKeywords.cp_FETCH, IProCToken.tFETCH);
-    	fProCKeywords.put(ProCKeywords.cp_fetch, IProCToken.tFETCH);
-    	fProCKeywords.put(ProCKeywords.cp_INTO, IProCToken.tINTO);
-    	fProCKeywords.put(ProCKeywords.cp_into, IProCToken.tINTO);
+		fProCKeywords.put(ProCKeywords.cp_EXECUTE , IProCToken.tEXECUTE);
+		fProCKeywords.put(ProCKeywords.cp_execute , IProCToken.tEXECUTE);
+		fProCKeywords.put(ProCKeywords.cp_END_EXEC , IProCToken.tEND_EXEC);
+		fProCKeywords.put(ProCKeywords.cp_end_exec , IProCToken.tEND_EXEC);
 
-    	fProCKeywords.put(ProCKeywords.sq_SELECT, IProCToken.tSELECT);
-    	fProCKeywords.put(ProCKeywords.sq_select, IProCToken.tSELECT);
-    	fProCKeywords.put(ProCKeywords.sq_DELETE, IProCToken.tDELETE);
-    	fProCKeywords.put(ProCKeywords.sq_delete, IProCToken.tDELETE);
-    	fProCKeywords.put(ProCKeywords.sq_INSERT, IProCToken.tINSERT);
-    	fProCKeywords.put(ProCKeywords.sq_insert, IProCToken.tINSERT);
-    	fProCKeywords.put(ProCKeywords.sq_UPDATE, IProCToken.tUPDATE);
-    	fProCKeywords.put(ProCKeywords.sq_update, IProCToken.tUPDATE);
-    	fProCKeywords.put(ProCKeywords.sq_TRUNCATE, IProCToken.tTRUNCATE);
-    	fProCKeywords.put(ProCKeywords.sq_truncate, IProCToken.tTRUNCATE);
+		fProCKeywords.put(ProCKeywords.cp_BEGIN, IProCToken.tBEGIN);
+		fProCKeywords.put(ProCKeywords.cp_begin, IProCToken.tBEGIN);
+		fProCKeywords.put(ProCKeywords.cp_END, IProCToken.tEND);
+		fProCKeywords.put(ProCKeywords.cp_end, IProCToken.tEND);
+		fProCKeywords.put(ProCKeywords.cp_DECLARE, IProCToken.tDECLARE);
+		fProCKeywords.put(ProCKeywords.cp_declare, IProCToken.tDECLARE);
+		fProCKeywords.put(ProCKeywords.cp_SECTION, IProCToken.tSECTION);
+		fProCKeywords.put(ProCKeywords.cp_section, IProCToken.tSECTION);
+		fProCKeywords.put(ProCKeywords.cp_CURSOR, IProCToken.tCURSOR);
+		fProCKeywords.put(ProCKeywords.cp_cursor, IProCToken.tCURSOR);
+		fProCKeywords.put(ProCKeywords.cp_FOR, IProCToken.tFOR);
+		fProCKeywords.put(ProCKeywords.cp_for, IProCToken.tFOR);
+		fProCKeywords.put(ProCKeywords.cp_OPEN, IProCToken.tOPEN);
+		fProCKeywords.put(ProCKeywords.cp_open, IProCToken.tOPEN);
+		fProCKeywords.put(ProCKeywords.cp_CLOSE, IProCToken.tCLOSE);
+		fProCKeywords.put(ProCKeywords.cp_close, IProCToken.tCLOSE);
+		fProCKeywords.put(ProCKeywords.cp_FETCH, IProCToken.tFETCH);
+		fProCKeywords.put(ProCKeywords.cp_fetch, IProCToken.tFETCH);
+		fProCKeywords.put(ProCKeywords.cp_INTO, IProCToken.tINTO);
+		fProCKeywords.put(ProCKeywords.cp_into, IProCToken.tINTO);
+
+		fProCKeywords.put(ProCKeywords.sq_SELECT, IProCToken.tSELECT);
+		fProCKeywords.put(ProCKeywords.sq_select, IProCToken.tSELECT);
+		fProCKeywords.put(ProCKeywords.sq_DELETE, IProCToken.tDELETE);
+		fProCKeywords.put(ProCKeywords.sq_delete, IProCToken.tDELETE);
+		fProCKeywords.put(ProCKeywords.sq_INSERT, IProCToken.tINSERT);
+		fProCKeywords.put(ProCKeywords.sq_insert, IProCToken.tINSERT);
+		fProCKeywords.put(ProCKeywords.sq_UPDATE, IProCToken.tUPDATE);
+		fProCKeywords.put(ProCKeywords.sq_update, IProCToken.tUPDATE);
+		fProCKeywords.put(ProCKeywords.sq_TRUNCATE, IProCToken.tTRUNCATE);
+		fProCKeywords.put(ProCKeywords.sq_truncate, IProCToken.tTRUNCATE);
 	}
 
 	private CharArrayMap<char[]> fHeaderReplaces = new CharArrayMap<>(8);
@@ -97,152 +102,170 @@ public class ProCPreprocessor extends CPreprocessor {
 		fHeaderReplaces.put(ProCKeywords.rh_sqlda, ProCKeywords.rh_sqlda_h);
 	}
 
+	boolean isInExecSqlBlock = false;
+	int endOfSqlBlock = IToken.tSEMI;
 	@Override
 	protected Token internalFetchToken(ScannerContext uptoEndOfCtx,
 			int options, boolean withinExpansion)
-			throws OffsetLimitReachedException {
-        Token ppToken= fCurrentContext.currentLexerToken();
-        while (true) {
-			switch (ppToken.getType()) {
-        	case Lexer.tBEFORE_INPUT:
-    			ppToken= fCurrentContext.nextPPToken();
-        		continue;
+					throws OffsetLimitReachedException {
+		Token ppToken= fCurrentContext.currentLexerToken();
+		while (true) {
+			int type = ppToken.getType();
+			switch (type) {
+			case Lexer.tBEFORE_INPUT:
+				ppToken= fCurrentContext.nextPPToken();
+				continue;
 
-        	case Lexer.tNEWLINE:
-        		if ((options & STOP_AT_NL) != 0) {
-        			return ppToken;
-        		}
-        		ppToken= fCurrentContext.nextPPToken();
-        		continue;
+			case Lexer.tNEWLINE:
+				if ((options & STOP_AT_NL) != 0) {
+					return ppToken;
+				}
+				ppToken= fCurrentContext.nextPPToken();
+				continue;
 
-        	case Lexer.tOTHER_CHARACTER:
-        		handleProblem(IProblem.SCANNER_BAD_CHARACTER, ppToken.getCharImage(),
-        				ppToken.getOffset(), ppToken.getEndOffset());
-        		ppToken= fCurrentContext.nextPPToken();
-        		continue;
+			case Lexer.tOTHER_CHARACTER:
+				handleProblem(IProblem.SCANNER_BAD_CHARACTER, ppToken.getCharImage(),
+						ppToken.getOffset(), ppToken.getEndOffset());
+				ppToken= fCurrentContext.nextPPToken();
+				continue;
 
-        	case IToken.tEND_OF_INPUT:
-        		if (fCurrentContext == uptoEndOfCtx || uptoEndOfCtx == null) {
-        			if (fCurrentContext == fRootContext && !fHandledEndOfTranslationUnit
-        					&& (options & STOP_AT_NL) == 0) {
-        				fHandledEndOfTranslationUnit= true;
-        				fLocationMap.endTranslationUnit(ppToken.getEndOffset(), fCurrentContext.getSignificantMacros());
-        			}
-        			return ppToken;
-        		}
+			case IToken.tEND_OF_INPUT:
+				if (fCurrentContext == uptoEndOfCtx || uptoEndOfCtx == null) {
+					if (fCurrentContext == fRootContext && !fHandledEndOfTranslationUnit
+							&& (options & STOP_AT_NL) == 0) {
+						fHandledEndOfTranslationUnit= true;
+						fLocationMap.endTranslationUnit(ppToken.getEndOffset(), fCurrentContext.getSignificantMacros());
+					}
+					return ppToken;
+				}
 
-        		final ILocationCtx locationCtx = fCurrentContext.getLocationCtx();
-    			ASTInclusionStatement inc = locationCtx.getInclusionStatement();
-        		if (inc != null) {
-        			completeInclusion(inc);
-        		}
-            	fLocationMap.popContext(locationCtx);
+				final ILocationCtx locationCtx = fCurrentContext.getLocationCtx();
+				ASTInclusionStatement inc = locationCtx.getInclusionStatement();
+				if (inc != null) {
+					completeInclusion(inc);
+				}
+				fLocationMap.popContext(locationCtx);
 
-            	fCurrentContext.propagateSignificantMacros();
+				fCurrentContext.propagateSignificantMacros();
 				fCurrentContext= fCurrentContext.getParent();
-        		assert fCurrentContext != null;
+				assert fCurrentContext != null;
 
-        		ppToken= fCurrentContext.currentLexerToken();
-        		continue;
+				ppToken= fCurrentContext.currentLexerToken();
+				continue;
 
-            case IToken.tPOUND:
-               	{
-               		final Lexer lexer= fCurrentContext.getLexer();
-               		if (lexer != null && lexer.currentTokenIsFirstOnLine()) {
-               			executeDirective(lexer, ppToken.getOffset(), withinExpansion);
-               			ppToken= fCurrentContext.currentLexerToken();
-               			continue;
-               		}
-               		break;
-               	}
+			case IToken.tPOUND:
+			{
+				final Lexer lexer= fCurrentContext.getLexer();
+				if (lexer != null && lexer.currentTokenIsFirstOnLine()) {
+					executeDirective(lexer, ppToken.getOffset(), withinExpansion);
+					ppToken= fCurrentContext.currentLexerToken();
+					continue;
+				}
+				break;
+			}
 
-        	case IToken.tIDENTIFIER:
-        		fCurrentContext.nextPPToken(); // consume the identifier
-        		if ((options & NO_EXPANSION) == 0) {
-        			final Lexer lexer= fCurrentContext.getLexer();
-        			if (lexer != null && expandMacro(ppToken, lexer, options, withinExpansion)) {
-        				ppToken= fCurrentContext.currentLexerToken();
-        				continue;
-        			}
+			case IToken.tIDENTIFIER:
+				fCurrentContext.nextPPToken(); // consume the identifier
+				if ((options & NO_EXPANSION) == 0) {
+					final Lexer lexer= fCurrentContext.getLexer();
+					if (lexer != null && expandMacro(ppToken, lexer, options, withinExpansion)) {
+						ppToken= fCurrentContext.currentLexerToken();
+						continue;
+					}
 
-        			final char[] name= ppToken.getCharImage();
-        			int tokenType = fKeywords.get(name);
-        			if (tokenType != fKeywords.undefined) {
-        				ppToken.setType(tokenType);
-        			}
-        		}
-            	return ppToken;
+					final char[] name= ppToken.getCharImage();
+					int tokenType = fKeywords.get(name);
+					if (tokenType != fKeywords.undefined) {
+						ppToken.setType(tokenType);
+					}
+				}
+				return ppToken;
 
-        	case IToken.tINTEGER:
-        		if ((options & CHECK_NUMBERS) != 0) {
-        			checkNumber(ppToken, false);
-        		}
-        		break;
+			case IToken.tINTEGER:
+				if ((options & CHECK_NUMBERS) != 0) {
+					checkNumber(ppToken, false);
+				}
+				break;
 
-        	case IToken.tFLOATINGPT:
-        		if ((options & CHECK_NUMBERS) != 0) {
-        			checkNumber(ppToken, true);
-        		}
-        		break;
+			case IToken.tFLOATINGPT:
+				if ((options & CHECK_NUMBERS) != 0) {
+					checkNumber(ppToken, true);
+				}
+				break;
 
-        	case IProCToken.tEXEC:
-        		/*
-        		 * ProC
-        		 */
-        		Token tokenSql = null;
+			case IProCToken.tEXEC:
+				/*
+				 * ProC
+				 */
+				Token tokenSql = null;
 
-        		ppToken= fCurrentContext.nextPPToken();
+				ppToken= fCurrentContext.nextPPToken();
 
-//TODO EXEC<LF>SQL
-        		if (ppToken.getType() == Lexer.tNEWLINE) {
-            		ppToken= fCurrentContext.nextPPToken();
-        		}
+				if (ppToken.getType() == Lexer.tNEWLINE) {
+					ppToken= fCurrentContext.nextPPToken();
+				}
 
-        		final int ppt = fProCKeywords.get(ppToken.getCharImage());
-        		switch (ppt) {
-        		case IProCToken.tSQL:
-        		case IProCToken.tORACLE:
-           			ppToken.setType(ppt);
+				final int ppt = fProCKeywords.get(ppToken.getCharImage());
+				switch (ppt) {
+				case IProCToken.tSQL:
+				case IProCToken.tORACLE:
+					isInExecSqlBlock = true;
+					endOfSqlBlock = IToken.tSEMI;
 
-           			tokenSql = ppToken;		// save "SQL","ORACLE"
-            		ppToken = fCurrentContext.nextPPToken();
-                	final char[] ppName = ppToken.getCharImage();
-                	final int ppType = fProCKeywords.get(ppName);
+					final ProCLexer pl = (ProCLexer) fCurrentContext.getLexer();
+					if (pl != null) {
+						pl.isInExecSqlBlock = true;
+					}
 
-                	switch (ppType) {
-                	case IProCToken.tINCLUDE:
-                		final Lexer lexer= fCurrentContext.getLexer();
-                		if (lexer != null) {
-                			executeInclude(lexer, ppToken.getOffset(), ppType,
-                					fCurrentContext.getCodeState() == CodeState.eActive, withinExpansion);
-                			ppToken= fCurrentContext.currentLexerToken();
-                			continue;
-                		}
-                	}
+					ppToken.setType(ppt);
 
-    				return tokenSql;	// return "SQL","ORACLE"
-            	}
-//FIXME
-//           	switch (ppToken.getType()) {
-////        	case Lexer.tNEWLINE:
-//            	case Lexer.tOTHER_CHARACTER:
-//            	case IToken.tEND_OF_INPUT:
-//           		continue;
-//           	}
+					tokenSql = ppToken;		// save "SQL","ORACLE"
+					ppToken = fCurrentContext.nextPPToken();
+					final char[] ppName = ppToken.getCharImage();
+					final int ppType = fProCKeywords.get(ppName);
 
-//FIXME
-        		break;
-//           	return ppToken;	//<- endless loop?
+					switch (ppType) {
+					case IProCToken.tINCLUDE:
+						final Lexer lexer= fCurrentContext.getLexer();
+						if (lexer != null) {
+							executeInclude(lexer, ppToken.getOffset(), ppType,
+									fCurrentContext.getCodeState() == CodeState.eActive, withinExpansion);
+							ppToken= fCurrentContext.currentLexerToken();
+							continue;
+						}
+						break;
+					}
 
-        	}
-        	fCurrentContext.nextPPToken();
-        	return ppToken;
-        }
-    }
+					return tokenSql;	// return "SQL","ORACLE"
+				}
+				break;
+
+			case IProCToken.tEXECUTE:
+				if (isInExecSqlBlock) {
+					endOfSqlBlock = IProCToken.tEND_EXEC;
+				}
+				break;
+			}
+
+			if (isInExecSqlBlock) {
+				if (type == endOfSqlBlock) {
+					isInExecSqlBlock = false;
+					endOfSqlBlock = IToken.tSEMI;
+					final ProCLexer pl = (ProCLexer) fCurrentContext.getLexer();
+					if (pl != null) {
+						pl.isInExecSqlBlock = false;
+					}
+				}
+			}
+
+			fCurrentContext.nextPPToken();
+			return ppToken;
+		}
+	}
 
 	@Override
-    protected char[] extractHeaderName(
-    		final char[] image, final char startDelim, final char endDelim, int[] offsets) {
+	protected char[] extractHeaderName(
+			final char[] image, final char startDelim, final char endDelim, int[] offsets) {
 
 		char[] headerName = super.extractHeaderName(image, startDelim, endDelim, offsets);
 		char[] headerNameConv = null;

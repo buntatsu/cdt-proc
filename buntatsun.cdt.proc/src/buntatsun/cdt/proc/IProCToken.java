@@ -22,6 +22,9 @@ public interface IProCToken extends IToken {
 		tFETCH = FIRST_IProCToken + 13,
 		tINTO = FIRST_IProCToken + 14,
 		tVARCHAR = FIRST_IProCToken + 15,
+		tEXECUTE = FIRST_IProCToken + 16,
+		tEND_EXEC = FIRST_IProCToken + 17,
+		tASSIGN = FIRST_IProCToken + 18,
 		//
 		tSELECT = FIRST_IProCToken + 100,
 		tDELETE = FIRST_IProCToken + 101,

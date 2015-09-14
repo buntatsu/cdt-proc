@@ -46,6 +46,11 @@ public class ProCKeywords {
 			cp_VARCHAR = "VARCHAR".toCharArray(),
 			cp_varchar = "varchar".toCharArray(),
 
+			cp_EXECUTE = "EXECUTE".toCharArray(),
+			cp_execute = "execute".toCharArray(),
+			cp_END_EXEC = "END-EXEC".toCharArray(),
+			cp_end_exec = "end-exec".toCharArray(),
+
 			sq_SELECT = "SELECT".toCharArray(),
 			sq_select = "select".toCharArray(),
 			sq_DELETE = "DELETE".toCharArray(),

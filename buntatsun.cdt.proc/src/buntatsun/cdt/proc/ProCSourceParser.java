@@ -55,8 +55,13 @@ public class ProCSourceParser extends GNUCSourceParser {
 
 		IASTStatement stmt = null;
 
-		while ((t = consume()).getType() != IToken.tSEMI) {
+		int endOfProc = IToken.tSEMI;
+
+		while ((t = consume()).getType() != endOfProc) {
 			switch (t.getType()) {
+			case IProCToken.tEXECUTE:
+				endOfProc = IProCToken.tEND_EXEC;
+				break;
 			case IToken.tCOLON:
 				if (stmt == null) {
 					stmt = nodeFactory.newCompoundStatement();

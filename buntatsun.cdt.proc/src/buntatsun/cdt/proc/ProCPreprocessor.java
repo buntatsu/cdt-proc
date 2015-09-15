@@ -11,6 +11,7 @@ import org.eclipse.cdt.core.parser.OffsetLimitReachedException;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 import org.eclipse.cdt.core.parser.util.CharArrayIntMap;
 import org.eclipse.cdt.core.parser.util.CharArrayMap;
+import org.eclipse.cdt.core.parser.util.CharArrayUtils;
 import org.eclipse.cdt.internal.core.parser.scanner.ASTInclusionStatement;
 import org.eclipse.cdt.internal.core.parser.scanner.AbstractCharArray;
 import org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor;
@@ -261,6 +262,19 @@ public class ProCPreprocessor extends CPreprocessor {
 			fCurrentContext.nextPPToken();
 			return ppToken;
 		}
+	}
+
+	@Override
+	protected boolean expandMacro(final Token identifier, Lexer lexer, int options,
+			boolean withinExpansion) throws OffsetLimitReachedException {
+		if (isInExecSqlBlock) {
+			final char[] name = identifier.getCharImage();
+			if (CharArrayUtils.equals(name, ProCKeywords.cp_VARCHAR)
+					|| CharArrayUtils.equals(name, ProCKeywords.cp_varchar)) {
+				return false;
+			}
+		}
+		return super.expandMacro(identifier, lexer, options, withinExpansion);
 	}
 
 	@Override

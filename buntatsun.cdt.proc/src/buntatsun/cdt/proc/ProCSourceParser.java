@@ -96,11 +96,16 @@ public class ProCSourceParser extends GNUCSourceParser {
 			switch (LT(1)) {
 			case IProCToken.tSQL:
 			case IProCToken.tORACLE:
-				// skip to semicolon
-				while (consume().getType() != IToken.tSEMI) {
-					;
+				// skip to semicolon or END-EXEC
+				int endOfProc = IToken.tSEMI;
+				IToken t;
+				while ((t = consume()).getType() != endOfProc) {
+					switch (t.getType()) {
+					case IProCToken.tEXECUTE:
+						endOfProc = IProCToken.tEND_EXEC;
+						break;
+					}
 				}
-
 				return new IASTDeclaration[] {};
 			}
 		} catch (EndOfFileException e) {

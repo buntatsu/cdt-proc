@@ -103,15 +103,26 @@ public class ProCPreprocessor extends CPreprocessor {
 		fHeaderReplaces.put(ProCKeywords.rh_sqlda, ProCKeywords.rh_sqlda_h);
 	}
 
-	boolean isInExecSqlBlock = false;
-	int endOfSqlBlock = IToken.tSEMI;
+	boolean isInsideProCBlock = false;
+	int endOfProCBlock = IToken.tSEMI;
 	@Override
 	protected Token internalFetchToken(ScannerContext uptoEndOfCtx,
 			int options, boolean withinExpansion)
 					throws OffsetLimitReachedException {
 		Token ppToken= fCurrentContext.currentLexerToken();
 		while (true) {
-			int type = ppToken.getType();
+
+			if (isInsideProCBlock) {
+				/*
+				 * Pro*C
+				 */
+				final int ppt = fProCKeywords.get(ppToken.getCharImage());
+				if (ppt > 0) {
+					ppToken.setType(ppt);
+				}
+			}
+
+			final int type = ppToken.getType();
 			switch (type) {
 			case Lexer.tBEFORE_INPUT:
 				ppToken= fCurrentContext.nextPPToken();
@@ -196,7 +207,7 @@ public class ProCPreprocessor extends CPreprocessor {
 
 			case IProCToken.tEXEC:
 				/*
-				 * ProC
+				 * Pro*C
 				 */
 				Token tokenSql = null;
 
@@ -210,12 +221,12 @@ public class ProCPreprocessor extends CPreprocessor {
 				switch (ppt) {
 				case IProCToken.tSQL:
 				case IProCToken.tORACLE:
-					isInExecSqlBlock = true;
-					endOfSqlBlock = IToken.tSEMI;
+					isInsideProCBlock = true;
+					endOfProCBlock = IToken.tSEMI;
 
 					final ProCLexer pl = (ProCLexer) fCurrentContext.getLexer();
 					if (pl != null) {
-						pl.isInExecSqlBlock = true;
+						pl.isInsideProCBlock = true;
 					}
 
 					ppToken.setType(ppt);
@@ -242,19 +253,25 @@ public class ProCPreprocessor extends CPreprocessor {
 				break;
 
 			case IProCToken.tEXECUTE:
-				if (isInExecSqlBlock) {
-					endOfSqlBlock = IProCToken.tEND_EXEC;
+				/*
+				 * Pro*C
+				 */
+				if (isInsideProCBlock) {
+					endOfProCBlock = IProCToken.tEND_EXEC;
 				}
 				break;
 			}
 
-			if (isInExecSqlBlock) {
-				if (type == endOfSqlBlock) {
-					isInExecSqlBlock = false;
-					endOfSqlBlock = IToken.tSEMI;
+			if (isInsideProCBlock) {
+				/*
+				 * Pro*C
+				 */
+				if (type == endOfProCBlock) {
+					isInsideProCBlock = false;
+					endOfProCBlock = IToken.tSEMI;
 					final ProCLexer pl = (ProCLexer) fCurrentContext.getLexer();
 					if (pl != null) {
-						pl.isInExecSqlBlock = false;
+						pl.isInsideProCBlock = false;
 					}
 				}
 			}
@@ -267,7 +284,10 @@ public class ProCPreprocessor extends CPreprocessor {
 	@Override
 	protected boolean expandMacro(final Token identifier, Lexer lexer, int options,
 			boolean withinExpansion) throws OffsetLimitReachedException {
-		if (isInExecSqlBlock) {
+		if (isInsideProCBlock) {
+			/*
+			 * Inside Pro*C Block, not expand VARCHAR macro
+			 */
 			final char[] name = identifier.getCharImage();
 			if (CharArrayUtils.equals(name, ProCKeywords.cp_VARCHAR)
 					|| CharArrayUtils.equals(name, ProCKeywords.cp_varchar)) {

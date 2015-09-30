@@ -50,6 +50,10 @@ public class ProCKeywords {
 			cp_execute = "execute".toCharArray(),
 			cp_END_EXEC = "END-EXEC".toCharArray(),
 			cp_end_exec = "end-exec".toCharArray(),
+			cp_TOOLS = "TOOLS".toCharArray(),
+			cp_tools = "tools".toCharArray(),
+			cp_IAF = "IAF".toCharArray(),
+			cp_iaf = "iaf".toCharArray(),
 
 			sq_SELECT = "SELECT".toCharArray(),
 			sq_select = "select".toCharArray(),

@@ -53,6 +53,10 @@ public class ProCPreprocessor extends CPreprocessor {
 		fProCKeywords.put(ProCKeywords.cp_execute , IProCToken.tEXECUTE);
 		fProCKeywords.put(ProCKeywords.cp_END_EXEC , IProCToken.tEND_EXEC);
 		fProCKeywords.put(ProCKeywords.cp_end_exec , IProCToken.tEND_EXEC);
+		fProCKeywords.put(ProCKeywords.cp_TOOLS , IProCToken.tTOOLS);
+		fProCKeywords.put(ProCKeywords.cp_tools , IProCToken.tTOOLS);
+		fProCKeywords.put(ProCKeywords.cp_IAF , IProCToken.tIAF);
+		fProCKeywords.put(ProCKeywords.cp_iaf , IProCToken.tIAF);
 
 		fProCKeywords.put(ProCKeywords.cp_BEGIN, IProCToken.tBEGIN);
 		fProCKeywords.put(ProCKeywords.cp_begin, IProCToken.tBEGIN);
@@ -221,6 +225,8 @@ public class ProCPreprocessor extends CPreprocessor {
 				switch (ppt) {
 				case IProCToken.tSQL:
 				case IProCToken.tORACLE:
+				case IProCToken.tTOOLS:
+				case IProCToken.tIAF:
 					isInsideProCBlock = true;
 					endOfProCBlock = IToken.tSEMI;
 

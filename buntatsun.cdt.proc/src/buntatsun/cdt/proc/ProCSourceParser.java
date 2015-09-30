@@ -36,6 +36,8 @@ public class ProCSourceParser extends GNUCSourceParser {
 		switch (LT(1)) {
 		case IProCToken.tSQL:
 		case IProCToken.tORACLE:
+		case IProCToken.tTOOLS:
+		case IProCToken.tIAF:
 			/*
 			 * ProC
 			 */
@@ -96,6 +98,8 @@ public class ProCSourceParser extends GNUCSourceParser {
 			switch (LT(1)) {
 			case IProCToken.tSQL:
 			case IProCToken.tORACLE:
+			case IProCToken.tTOOLS:
+			case IProCToken.tIAF:
 				// skip to semicolon or END-EXEC
 				int endOfProc = IToken.tSEMI;
 				IToken t;

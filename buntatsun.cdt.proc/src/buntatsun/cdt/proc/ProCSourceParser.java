@@ -5,6 +5,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.parser.c.ICParserExtensionConfiguration;
 import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.parser.EndOfFileException;
@@ -51,10 +52,8 @@ public class ProCSourceParser extends GNUCSourceParser {
 	 * ProC
 	 */
 	protected IASTStatement parseSqlStatement() throws EndOfFileException, BacktrackException {
-		IToken t1, t;
-
-		t1 = consume();
-
+		final IToken t1 = consume();
+		IToken t;
 		IASTStatement stmt = null;
 
 		int endOfProc = IToken.tSEMI;
@@ -62,25 +61,30 @@ public class ProCSourceParser extends GNUCSourceParser {
 		while ((t = consume()).getType() != endOfProc) {
 			switch (t.getType()) {
 			case IProCToken.tEXECUTE:
-				endOfProc = IProCToken.tEND_EXEC;
+				switch (LT(1)) {
+				case IProCToken.tDECLARE:
+				case IProCToken.tBEGIN:
+					endOfProc = IProCToken.tEND_EXEC;
+					break;
+				}
 				break;
-			case IToken.tCOLON:
+			}
+
+			if (LT(1) == IToken.tINCR) {
+				/*
+				 * Pro*C host variable. -> fake ++ expression.
+				 * (See ProCLexer.fetchToken)
+				 */
+				IASTExpression expression
+					= unaryExpression(IASTUnaryExpression.op_prefixIncr, CastExprCtx.eInBExpr, null);
+				IASTExpressionStatement expressionStatement
+					= nodeFactory.newExpressionStatement(expression);
+				setRange(expressionStatement, expression);
 				if (stmt == null) {
 					stmt = nodeFactory.newCompoundStatement();
 				}
-
-				IASTExpression expr = expression(ExprKind.eAssignment);
-
-				// fake ++ operation. (to avoid syntax error)
-				BinaryOperator lastOperator = new BinaryOperator(null, expr, IToken.tPLUSASSIGN, 21, 20);
-				IASTExpression expr_fake = buildExpression(lastOperator, expr);
-
-				IASTExpressionStatement expst = nodeFactory.newExpressionStatement(expr_fake);
-				expst.setParent(stmt);
-				((ASTNode) expst).setOffsetAndLength((ASTNode) expr);
-
-				((IASTCompoundStatement) stmt).addStatement(expst);
-				break;
+				expressionStatement.setParent(stmt);
+				((IASTCompoundStatement) stmt).addStatement(expressionStatement);
 			}
 		}
 
@@ -106,7 +110,12 @@ public class ProCSourceParser extends GNUCSourceParser {
 				while ((t = consume()).getType() != endOfProc) {
 					switch (t.getType()) {
 					case IProCToken.tEXECUTE:
-						endOfProc = IProCToken.tEND_EXEC;
+						switch (LT(1)) {
+						case IProCToken.tDECLARE:
+						case IProCToken.tBEGIN:
+							endOfProc = IProCToken.tEND_EXEC;
+							break;
+						}
 						break;
 					}
 				}

@@ -218,6 +218,13 @@ public class ProCLexer extends Lexer {
 						return newToken(IProCToken.tASSIGN, start);
 					}
 				}
+				if (isInsideProCBlock) {
+					/*
+					 * Pro*C host variable.
+					 *   -> fake ++ expression.
+					 */
+					return newToken(IToken.tINCR, start);
+				}
 				return newToken(IToken.tCOLON, start);
 
 			case '?':

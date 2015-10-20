@@ -249,6 +249,9 @@ public class ProCPreprocessor extends CPreprocessor {
 							executeInclude(lexer, ppToken.getOffset(), ppType,
 									fCurrentContext.getCodeState() == CodeState.eActive, withinExpansion);
 							ppToken= fCurrentContext.currentLexerToken();
+							if (pl != null) {
+								pl.isInsideProCBlock = false;
+							}
 							continue;
 						}
 						break;
@@ -259,13 +262,22 @@ public class ProCPreprocessor extends CPreprocessor {
 				break;
 
 			case IProCToken.tEXECUTE:
-				/*
-				 * Pro*C
-				 */
-				if (isInsideProCBlock) {
-					endOfProCBlock = IProCToken.tEND_EXEC;
+				final Token tokenExecute = ppToken;	// save "EXECUTE"
+
+				// skip newlines
+				while ((ppToken = fCurrentContext.nextPPToken()).getType() == Lexer.tNEWLINE) {
+					;
 				}
-				break;
+
+				final char[] ppName = ppToken.getCharImage();
+				final int ppType = fProCKeywords.get(ppName);
+				switch (ppType) {
+				case IProCToken.tDECLARE:
+				case IProCToken.tBEGIN:
+					endOfProCBlock = IProCToken.tEND_EXEC;
+					break;
+				}
+				return tokenExecute;
 			}
 
 			if (isInsideProCBlock) {

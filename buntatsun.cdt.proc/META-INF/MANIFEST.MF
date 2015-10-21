@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Proc
 Bundle-SymbolicName: buntatsun.cdt.proc;singleton:=true
-Bundle-Version: 3.0.0
+Bundle-Version: 3.1.0
 Bundle-Activator: buntatsun.cdt.proc.Activator
 Require-Bundle: org.eclipse.core.filesystem;bundle-version="1.5.0";resolution:=optional,
  org.eclipse.core.resources;bundle-version="3.10.0";resolution:=optional,

@@ -22,5 +22,7 @@ public class ProCScannerExtensionConfiguration extends
 		addMacro(new String(ProCKeywords.cp_VARCHAR), "struct {short len;char arr[1];}");
 		addMacro("sql_context", "void*");
 		addMacro("SQL_CONTEXT", "void*");
+		addMacro("sql_cursor", "void*");
+		addMacro("SQL_CURSOR", "void*");
 	}
 }

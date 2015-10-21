@@ -40,7 +40,7 @@ public class ProCSourceParser extends GNUCSourceParser {
 		case IProCToken.tTOOLS:
 		case IProCToken.tIAF:
 			/*
-			 * ProC
+			 * Pro*C
 			 */
 			return parseSqlStatement();
 		}
@@ -49,16 +49,16 @@ public class ProCSourceParser extends GNUCSourceParser {
 	}
 
 	/*
-	 * ProC
+	 * Pro*C
 	 */
 	protected IASTStatement parseSqlStatement() throws EndOfFileException, BacktrackException {
 		final IToken t1 = consume();
-		IToken t;
 		IASTStatement stmt = null;
 
 		int endOfProc = IToken.tSEMI;
 
-		while ((t = consume()).getType() != endOfProc) {
+		IToken t = t1;
+		while (true) {
 			switch (t.getType()) {
 			case IProCToken.tEXECUTE:
 				switch (LT(1)) {
@@ -70,13 +70,16 @@ public class ProCSourceParser extends GNUCSourceParser {
 				break;
 			}
 
-			if (LT(1) == IToken.tINCR) {
+			for (int loop = 0; LT(1) == IToken.tCOLON && loop < 2; loop++) {
 				/*
-				 * Pro*C host variable. -> fake ++ expression.
-				 * (See ProCLexer.fetchToken)
+				 * Pro*C host & indicator variable. -> fake ++ expression.
+				 *   1st loop : host variable
+				 *   2nd loop : indicator variable
 				 */
+				LA(1).setType(IToken.tINCR);
+
 				IASTExpression expression
-					= unaryExpression(IASTUnaryExpression.op_prefixIncr, CastExprCtx.eInBExpr, null);
+					= unaryExpression(IASTUnaryExpression.op_prefixIncr, CastExprCtx.eDirectlyInBExpr, null);
 				IASTExpressionStatement expressionStatement
 					= nodeFactory.newExpressionStatement(expression);
 				setRange(expressionStatement, expression);
@@ -85,6 +88,11 @@ public class ProCSourceParser extends GNUCSourceParser {
 				}
 				expressionStatement.setParent(stmt);
 				((IASTCompoundStatement) stmt).addStatement(expressionStatement);
+			}
+
+			t = consume();
+			if (t.getType() == endOfProc) {
+				break;
 			}
 		}
 

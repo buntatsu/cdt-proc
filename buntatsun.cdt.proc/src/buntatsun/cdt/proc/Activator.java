@@ -1,36 +1,46 @@
 package buntatsun.cdt.proc;
 
-import org.osgi.framework.BundleActivator;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator implements BundleActivator {
+public class Activator extends AbstractUIPlugin {
+	public static final String PLUGIN_ID = "buntatsun.cdt.proc";
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "buntatsun.cdt.proc"; //$NON-NLS-1$
+	private static Activator plugin;
+	private ResourceBundle resourceBundle;
 
-	private static BundleContext context;
-
-	static BundleContext getContext() {
-		return context;
+	public Activator() {
+		Assert.isTrue(plugin == null);
+		plugin = this;
+		try {
+			resourceBundle = ResourceBundle.getBundle(PLUGIN_ID + ".Resources");
+		} catch (MissingResourceException x) {
+			resourceBundle = null;
+		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
+	public static String getPluginId() {
+		return PLUGIN_ID;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
 	}
 
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
+	}
+
+	public static Activator getDefault() {
+		return plugin;
+	}
 }

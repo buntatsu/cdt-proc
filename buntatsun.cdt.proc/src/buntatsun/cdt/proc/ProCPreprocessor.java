@@ -115,7 +115,6 @@ public class ProCPreprocessor extends CPreprocessor {
 					throws OffsetLimitReachedException {
 		Token ppToken= fCurrentContext.currentLexerToken();
 		while (true) {
-
 			if (isInsideProCBlock) {
 				/*
 				 * Pro*C
@@ -213,13 +212,15 @@ public class ProCPreprocessor extends CPreprocessor {
 				/*
 				 * Pro*C
 				 */
-				Token tokenSql = null;
+				Token tokenExec = ppToken;	// save "EXEC"
 
-				ppToken= fCurrentContext.nextPPToken();
-
-				if (ppToken.getType() == Lexer.tNEWLINE) {
-					ppToken= fCurrentContext.nextPPToken();
+				// skip newlines
+				while ((ppToken = fCurrentContext.nextPPToken()).getType() == Lexer.tNEWLINE) {
+					;
 				}
+
+//TODO When only the exec, it is not treated as Pro*C block. (int exec = 0;)
+				tokenExec.setNext(ppToken);
 
 				final int ppt = fProCKeywords.get(ppToken.getCharImage());
 				switch (ppt) {
@@ -232,12 +233,10 @@ public class ProCPreprocessor extends CPreprocessor {
 
 					final ProCLexer pl = (ProCLexer) fCurrentContext.getLexer();
 					if (pl != null) {
+						pl.saveState();
 						pl.isInsideProCBlock = true;
 					}
 
-					ppToken.setType(ppt);
-
-					tokenSql = ppToken;		// save "SQL","ORACLE"
 					ppToken = fCurrentContext.nextPPToken();
 					final char[] ppName = ppToken.getCharImage();
 					final int ppType = fProCKeywords.get(ppName);
@@ -257,9 +256,18 @@ public class ProCPreprocessor extends CPreprocessor {
 						break;
 					}
 
-					return tokenSql;	// return "SQL","ORACLE"
+					if (pl != null) {
+						pl.restoreState();
+					}
+					break;
+
+//TODO When only "exec", it is not treated as Pro*C block. (int exec = 0;)
+//				default:
+//					tokenExec.setType(IToken.tIDENTIFIER);
+//					ppToken = tokenExec;
+//					continue;
 				}
-				break;
+				return tokenExec;	// return "EXEC"
 
 			case IProCToken.tEXECUTE:
 				final Token tokenExecute = ppToken;	// save "EXECUTE"

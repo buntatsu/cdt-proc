@@ -4,8 +4,11 @@ import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
+import org.eclipse.cdt.core.dom.ast.IASTLabelStatement;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.parser.c.ICParserExtensionConfiguration;
 import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.parser.EndOfFileException;
@@ -35,14 +38,17 @@ public class ProCSourceParser extends GNUCSourceParser {
 	@Override
 	protected IASTStatement statement() throws EndOfFileException, BacktrackException {
 		switch (LT(1)) {
-		case IProCToken.tSQL:
-		case IProCToken.tORACLE:
-		case IProCToken.tTOOLS:
-		case IProCToken.tIAF:
-			/*
-			 * Pro*C
-			 */
-			return parseSqlStatement();
+		case IProCToken.tEXEC:
+			switch (LT(2)) {
+			case IProCToken.tSQL:
+			case IProCToken.tORACLE:
+			case IProCToken.tTOOLS:
+			case IProCToken.tIAF:
+				/*
+				 * Pro*C
+				 */
+				return parseSqlStatement();
+			}
 		}
 
 		return super.statement();
@@ -53,13 +59,15 @@ public class ProCSourceParser extends GNUCSourceParser {
 	 */
 	protected IASTStatement parseSqlStatement() throws EndOfFileException, BacktrackException {
 		final IToken t1 = consume();
-		IASTStatement stmt = null;
+		IASTStatement stmt = nodeFactory.newCompoundStatement();
 
 		int endOfProc = IToken.tSEMI;
 
 		IToken t = t1;
 		while (true) {
-			switch (t.getType()) {
+			final int type = t.getType();
+
+			switch (type) {
 			case IProCToken.tEXECUTE:
 				switch (LT(1)) {
 				case IProCToken.tDECLARE:
@@ -67,6 +75,30 @@ public class ProCSourceParser extends GNUCSourceParser {
 					endOfProc = IProCToken.tEND_EXEC;
 					break;
 				}
+				break;
+			}
+
+			if (type == IToken.tIDENTIFIER || type >= IProCToken.FIRST_IProCToken) {
+				/*
+				 * Pro*C keyword
+				 */
+				final int offset = t.getOffset();
+				final int endOffset = t.getEndOffset();
+				final int length = t.getLength();
+
+				IASTName name = nodeFactory.newName(t.getCharImage());
+				((ASTNode) name).setOffsetAndLength(offset, length);
+
+				IBinding binding = new ProCBinding(name);
+				name.setBinding(binding);
+
+				ProCNullStatement null_statement = new ProCNullStatement(name);
+				setRange(null_statement, offset, endOffset);
+				null_statement.setParent(stmt);
+				((IASTCompoundStatement) stmt).addStatement(null_statement);
+			}
+
+			if (type == endOfProc) {
 				break;
 			}
 
@@ -83,17 +115,12 @@ public class ProCSourceParser extends GNUCSourceParser {
 				IASTExpressionStatement expressionStatement
 					= nodeFactory.newExpressionStatement(expression);
 				setRange(expressionStatement, expression);
-				if (stmt == null) {
-					stmt = nodeFactory.newCompoundStatement();
-				}
+
 				expressionStatement.setParent(stmt);
 				((IASTCompoundStatement) stmt).addStatement(expressionStatement);
 			}
 
 			t = consume();
-			if (t.getType() == endOfProc) {
-				break;
-			}
 		}
 
 		if (stmt == null) {
@@ -108,26 +135,57 @@ public class ProCSourceParser extends GNUCSourceParser {
 	protected IASTDeclaration[] problemDeclaration(int offset, BacktrackException bt, DeclarationOptions option) {
 		try {
 			switch (LT(1)) {
-			case IProCToken.tSQL:
-			case IProCToken.tORACLE:
-			case IProCToken.tTOOLS:
-			case IProCToken.tIAF:
-				// skip to semicolon or END-EXEC
-				int endOfProc = IToken.tSEMI;
-				IToken t;
-				while ((t = consume()).getType() != endOfProc) {
-					switch (t.getType()) {
-					case IProCToken.tEXECUTE:
-						switch (LT(1)) {
-						case IProCToken.tDECLARE:
-						case IProCToken.tBEGIN:
-							endOfProc = IProCToken.tEND_EXEC;
+			case IProCToken.tEXEC:
+
+				switch (LT(2)) {
+				case IProCToken.tSQL:
+				case IProCToken.tORACLE:
+				case IProCToken.tTOOLS:
+				case IProCToken.tIAF:
+					IASTStatement stmt = nodeFactory.newCompoundStatement();
+
+					// skip to semicolon or END-EXEC
+					int endOfProc = IToken.tSEMI;
+					IToken t = consume();
+					while (true) {
+						switch (t.getType()) {
+						case IProCToken.tEXECUTE:
+							switch (LT(1)) {
+							case IProCToken.tDECLARE:
+							case IProCToken.tBEGIN:
+								endOfProc = IProCToken.tEND_EXEC;
+								break;
+							}
 							break;
 						}
-						break;
+
+						final int type = t.getType();
+
+						if (type == IToken.tIDENTIFIER || type >= IProCToken.FIRST_IProCToken) {
+							final int p_offset = t.getOffset();
+							final int p_endOffset = t.getEndOffset();
+							final int p_length = t.getLength();
+
+							IASTName name = nodeFactory.newName(t.getCharImage());
+							((ASTNode) name).setOffsetAndLength(p_offset, p_length);
+
+							IBinding binding = new ProCBinding(name);
+							name.setBinding(binding);
+
+							IASTLabelStatement label_statement = nodeFactory.newLabelStatement(name, null);
+							setRange(label_statement, p_offset, p_endOffset);
+							label_statement.setParent(stmt);
+							((IASTCompoundStatement) stmt).addStatement(label_statement);
+						}
+
+						if (type == endOfProc) {
+							break;
+						}
+
+						t = consume();
 					}
+					return new IASTDeclaration[] {};
 				}
-				return new IASTDeclaration[] {};
 			}
 		} catch (EndOfFileException e) {
 			return new IASTDeclaration[] {};

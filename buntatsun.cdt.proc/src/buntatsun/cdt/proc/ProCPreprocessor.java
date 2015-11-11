@@ -243,6 +243,7 @@ public class ProCPreprocessor extends CPreprocessor {
 
 					switch (ppType) {
 					case IProCToken.tINCLUDE:
+						isInsideProCBlock = false;
 						final Lexer lexer= fCurrentContext.getLexer();
 						if (lexer != null) {
 							executeInclude(lexer, ppToken.getOffset(), ppType,
@@ -312,13 +313,9 @@ public class ProCPreprocessor extends CPreprocessor {
 			boolean withinExpansion) throws OffsetLimitReachedException {
 		if (isInsideProCBlock) {
 			/*
-			 * Inside Pro*C Block, not expand VARCHAR macro
+			 * Inside Pro*C Block, not expand macro
 			 */
-			final char[] name = identifier.getCharImage();
-			if (CharArrayUtils.equals(name, ProCKeywords.cp_VARCHAR)
-					|| CharArrayUtils.equals(name, ProCKeywords.cp_varchar)) {
-				return false;
-			}
+			return false;
 		}
 		return super.expandMacro(identifier, lexer, options, withinExpansion);
 	}

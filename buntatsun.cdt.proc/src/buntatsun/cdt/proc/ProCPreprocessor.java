@@ -11,7 +11,6 @@ import org.eclipse.cdt.core.parser.OffsetLimitReachedException;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 import org.eclipse.cdt.core.parser.util.CharArrayIntMap;
 import org.eclipse.cdt.core.parser.util.CharArrayMap;
-import org.eclipse.cdt.core.parser.util.CharArrayUtils;
 import org.eclipse.cdt.internal.core.parser.scanner.ASTInclusionStatement;
 import org.eclipse.cdt.internal.core.parser.scanner.AbstractCharArray;
 import org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor;
@@ -42,53 +41,25 @@ public class ProCPreprocessor extends CPreprocessor {
 	protected void addProCKeywords() {
 		fProCKeywords.put(ProCKeywords.cp_EXEC, IProCToken.tEXEC);
 		fProCKeywords.put(ProCKeywords.cp_exec, IProCToken.tEXEC);
-		fProCKeywords.put(ProCKeywords.cp_ORACLE, IProCToken.tORACLE);
-		fProCKeywords.put(ProCKeywords.cp_oracle, IProCToken.tORACLE);
 		fProCKeywords.put(ProCKeywords.cp_SQL, IProCToken.tSQL);
 		fProCKeywords.put(ProCKeywords.cp_sql, IProCToken.tSQL);
-		fProCKeywords.put(ProCKeywords.cp_INCLUDE , IProCToken.tINCLUDE);
-		fProCKeywords.put(ProCKeywords.cp_include , IProCToken.tINCLUDE);
-
-		fProCKeywords.put(ProCKeywords.cp_EXECUTE , IProCToken.tEXECUTE);
-		fProCKeywords.put(ProCKeywords.cp_execute , IProCToken.tEXECUTE);
-		fProCKeywords.put(ProCKeywords.cp_END_EXEC , IProCToken.tEND_EXEC);
-		fProCKeywords.put(ProCKeywords.cp_end_exec , IProCToken.tEND_EXEC);
+		fProCKeywords.put(ProCKeywords.cp_ORACLE, IProCToken.tORACLE);
+		fProCKeywords.put(ProCKeywords.cp_oracle, IProCToken.tORACLE);
 		fProCKeywords.put(ProCKeywords.cp_TOOLS , IProCToken.tTOOLS);
 		fProCKeywords.put(ProCKeywords.cp_tools , IProCToken.tTOOLS);
 		fProCKeywords.put(ProCKeywords.cp_IAF , IProCToken.tIAF);
 		fProCKeywords.put(ProCKeywords.cp_iaf , IProCToken.tIAF);
 
-		fProCKeywords.put(ProCKeywords.cp_BEGIN, IProCToken.tBEGIN);
-		fProCKeywords.put(ProCKeywords.cp_begin, IProCToken.tBEGIN);
-		fProCKeywords.put(ProCKeywords.cp_END, IProCToken.tEND);
-		fProCKeywords.put(ProCKeywords.cp_end, IProCToken.tEND);
+		fProCKeywords.put(ProCKeywords.cp_INCLUDE , IProCToken.tINCLUDE);
+		fProCKeywords.put(ProCKeywords.cp_include , IProCToken.tINCLUDE);
+		fProCKeywords.put(ProCKeywords.cp_EXECUTE , IProCToken.tEXECUTE);
+		fProCKeywords.put(ProCKeywords.cp_execute , IProCToken.tEXECUTE);
 		fProCKeywords.put(ProCKeywords.cp_DECLARE, IProCToken.tDECLARE);
 		fProCKeywords.put(ProCKeywords.cp_declare, IProCToken.tDECLARE);
-		fProCKeywords.put(ProCKeywords.cp_SECTION, IProCToken.tSECTION);
-		fProCKeywords.put(ProCKeywords.cp_section, IProCToken.tSECTION);
-		fProCKeywords.put(ProCKeywords.cp_CURSOR, IProCToken.tCURSOR);
-		fProCKeywords.put(ProCKeywords.cp_cursor, IProCToken.tCURSOR);
-		fProCKeywords.put(ProCKeywords.cp_FOR, IProCToken.tFOR);
-		fProCKeywords.put(ProCKeywords.cp_for, IProCToken.tFOR);
-		fProCKeywords.put(ProCKeywords.cp_OPEN, IProCToken.tOPEN);
-		fProCKeywords.put(ProCKeywords.cp_open, IProCToken.tOPEN);
-		fProCKeywords.put(ProCKeywords.cp_CLOSE, IProCToken.tCLOSE);
-		fProCKeywords.put(ProCKeywords.cp_close, IProCToken.tCLOSE);
-		fProCKeywords.put(ProCKeywords.cp_FETCH, IProCToken.tFETCH);
-		fProCKeywords.put(ProCKeywords.cp_fetch, IProCToken.tFETCH);
-		fProCKeywords.put(ProCKeywords.cp_INTO, IProCToken.tINTO);
-		fProCKeywords.put(ProCKeywords.cp_into, IProCToken.tINTO);
-
-		fProCKeywords.put(ProCKeywords.sq_SELECT, IProCToken.tSELECT);
-		fProCKeywords.put(ProCKeywords.sq_select, IProCToken.tSELECT);
-		fProCKeywords.put(ProCKeywords.sq_DELETE, IProCToken.tDELETE);
-		fProCKeywords.put(ProCKeywords.sq_delete, IProCToken.tDELETE);
-		fProCKeywords.put(ProCKeywords.sq_INSERT, IProCToken.tINSERT);
-		fProCKeywords.put(ProCKeywords.sq_insert, IProCToken.tINSERT);
-		fProCKeywords.put(ProCKeywords.sq_UPDATE, IProCToken.tUPDATE);
-		fProCKeywords.put(ProCKeywords.sq_update, IProCToken.tUPDATE);
-		fProCKeywords.put(ProCKeywords.sq_TRUNCATE, IProCToken.tTRUNCATE);
-		fProCKeywords.put(ProCKeywords.sq_truncate, IProCToken.tTRUNCATE);
+		fProCKeywords.put(ProCKeywords.cp_BEGIN, IProCToken.tBEGIN);
+		fProCKeywords.put(ProCKeywords.cp_begin, IProCToken.tBEGIN);
+		fProCKeywords.put(ProCKeywords.cp_END_EXEC , IProCToken.tEND_EXEC);
+		fProCKeywords.put(ProCKeywords.cp_end_exec , IProCToken.tEND_EXEC);
 	}
 
 	private CharArrayMap<char[]> fHeaderReplaces = new CharArrayMap<>(8);

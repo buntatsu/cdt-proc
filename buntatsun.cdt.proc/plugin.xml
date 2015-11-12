@@ -31,5 +31,27 @@
          priority="high">
    </content-type>
    </extension>
+   <extension
+         point="org.eclipse.cdt.ui.semanticHighlighting">
+      <semanticHighlighting
+            class="buntatsun.cdt.proc.ui.ProCKeywordHighlighting"
+            defaultEnabled="true"
+            defaultTextColor="180,90,0"
+            displayName="%procKeywordHighlighting.displayName"
+            id="buntatsun.cdt.proc.ui.ProCKeywordHighlighting"
+            preferenceKey="proc-keywords"
+            priority="6">
+      </semanticHighlighting>
+      <semanticHighlighting
+            class="buntatsun.cdt.proc.ui.ProCSqlFunctionHighlighting"
+            defaultBold="true"
+            defaultEnabled="true"
+            defaultTextColor="180,90,0"
+            displayName="%procSqlFunctionHighlighting.displayName"
+            id="buntatsun.cdt.proc.ui.ProCSqlFunctionHighlighting"
+            preferenceKey="proc-sql-functions"
+            priority="5">
+      </semanticHighlighting>
+   </extension>
 
 </plugin>

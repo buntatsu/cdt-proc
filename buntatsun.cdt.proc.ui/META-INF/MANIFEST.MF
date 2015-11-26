@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: buntatsun.cdt.proc.ui;singleton:=true
+Bundle-Version: 3.3.0
+Bundle-Activator: buntatsun.cdt.proc.ui.UIActivator
+Require-Bundle: buntatsun.cdt.proc,
+ org.eclipse.cdt.ui,
+ org.eclipse.cdt.core,
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Localization: plugin
+Bundle-Vendor: %providerName

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.cdt.ui.preferences.CPluginPreferencePage"
+            class="buntatsun.cdt.proc.ui.preferences.ProCPreferencePage"
+            id="buntatsun.cdt.proc.ui.ProCPreferencePage"
+            name="%proc">
+      </page>
+      <page
+            category="buntatsun.cdt.proc.ui.ProCPreferencePage"
+            class="buntatsun.cdt.proc.ui.preferences.ProCKeywordPreferencePage"
+            id="buntatsun.cdt.proc.ui.ProCKeywordPreferencePage"
+            name="%procHighlightingKeywords">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="buntatsun.cdt.proc.ui.preferences.PreferenceInitializerProCKeywords">
+      </initializer>
+   </extension>
+
+   <extension
+         point="org.eclipse.cdt.ui.semanticHighlighting">
+      <semanticHighlighting
+            class="buntatsun.cdt.proc.ui.ProCKeywordHighlighting"
+            defaultEnabled="true"
+            defaultTextColor="180,90,0"
+            displayName="%procKeywordHighlighting.displayName"
+            id="buntatsun.cdt.proc.ui.ProCKeywordHighlighting"
+            preferenceKey="proc-keywords"
+            priority="6">
+      </semanticHighlighting>
+      <semanticHighlighting
+            class="buntatsun.cdt.proc.ui.ProCSqlFunctionHighlighting"
+            defaultBold="true"
+            defaultEnabled="true"
+            defaultTextColor="180,90,0"
+            displayName="%procSqlFunctionHighlighting.displayName"
+            id="buntatsun.cdt.proc.ui.ProCSqlFunctionHighlighting"
+            preferenceKey="proc-sql-functions"
+            priority="5">
+      </semanticHighlighting>
+      <semanticHighlighting
+            class="buntatsun.cdt.proc.ui.ProCUserDefinedHighlighting"
+            defaultBold="true"
+            defaultEnabled="true"
+            defaultTextColor="180,90,0"
+            displayName="%procUserDefinedHighlighting.displayName"
+            id="buntatsun.cdt.proc.ui.ProCUserDefinedHighlighting"
+            preferenceKey="proc-user-defined"
+            priority="4">
+      </semanticHighlighting>
+   </extension>
+
+</plugin>

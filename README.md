@@ -22,8 +22,22 @@ Installation
 
     For example,
 
-        org.eclipse.cdt.core_5.9.1.201502131403.jar
+        org.eclipse.cdt.core_6.0.0.201606062011.jar
+        org.eclipse.cdt.core.source_6.0.0.201606062011.jar
 
-        org.eclipse.cdt.core.source_5.9.1.201502131403.jar
+5. Copy the unzipped files into Eclipse plugin folder.
 
-5. Copy the unzipped files into Eclipse plugin folder (and restart Eclipse).
+    For example,
+
+		eclipse
+		|-- dropins
+		|   |-- buntatsun.cdt.proc.ui_3.4.0.jar
+		|   `-- buntatsun.cdt.proc_3.4.0.jar
+		|-- plugins
+		    |    :
+		    |-- org.eclipse.cdt.core_6.0.0.201606062011.jar         (overwrite)
+		    |-- org.eclipse.cdt.core.source_6.0.0.201606062011.jar  (overwrite)
+		         :
+
+6. Restart Eclipse.
+

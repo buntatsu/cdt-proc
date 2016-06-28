@@ -59,7 +59,7 @@ public class ProCSourceParser extends GNUCSourceParser {
 	 */
 	protected IASTStatement parseSqlStatement() throws EndOfFileException, BacktrackException {
 		final IToken t1 = consume();
-		IASTStatement stmt = nodeFactory.newCompoundStatement();
+		IASTStatement stmt = getNodeFactory().newCompoundStatement();
 
 		int endOfProc = IToken.tSEMI;
 
@@ -86,7 +86,7 @@ public class ProCSourceParser extends GNUCSourceParser {
 				final int endOffset = t.getEndOffset();
 				final int length = t.getLength();
 
-				IASTName name = nodeFactory.newName(t.getCharImage());
+				IASTName name = getNodeFactory().newName(t.getCharImage());
 				((ASTNode) name).setOffsetAndLength(offset, length);
 
 				IBinding binding = new ProCBinding(name);
@@ -113,7 +113,7 @@ public class ProCSourceParser extends GNUCSourceParser {
 				IASTExpression expression
 					= unaryExpression(IASTUnaryExpression.op_prefixIncr, CastExprCtx.eDirectlyInBExpr, null);
 				IASTExpressionStatement expressionStatement
-					= nodeFactory.newExpressionStatement(expression);
+					= getNodeFactory().newExpressionStatement(expression);
 				setRange(expressionStatement, expression);
 
 				expressionStatement.setParent(stmt);
@@ -124,7 +124,7 @@ public class ProCSourceParser extends GNUCSourceParser {
 		}
 
 		if (stmt == null) {
-			stmt = nodeFactory.newNullStatement();
+			stmt = getNodeFactory().newNullStatement();
 		}
 
 		((ASTNode) stmt).setOffsetAndLength(t1.getOffset(), t.getEndOffset() - t1.getOffset());
@@ -142,7 +142,7 @@ public class ProCSourceParser extends GNUCSourceParser {
 				case IProCToken.tORACLE:
 				case IProCToken.tTOOLS:
 				case IProCToken.tIAF:
-					IASTStatement stmt = nodeFactory.newCompoundStatement();
+					IASTStatement stmt = getNodeFactory().newCompoundStatement();
 
 					// skip to semicolon or END-EXEC
 					int endOfProc = IToken.tSEMI;
@@ -166,13 +166,13 @@ public class ProCSourceParser extends GNUCSourceParser {
 							final int p_endOffset = t.getEndOffset();
 							final int p_length = t.getLength();
 
-							IASTName name = nodeFactory.newName(t.getCharImage());
+							IASTName name = getNodeFactory().newName(t.getCharImage());
 							((ASTNode) name).setOffsetAndLength(p_offset, p_length);
 
 							IBinding binding = new ProCBinding(name);
 							name.setBinding(binding);
 
-							IASTLabelStatement label_statement = nodeFactory.newLabelStatement(name, null);
+							IASTLabelStatement label_statement = getNodeFactory().newLabelStatement(name, null);
 							setRange(label_statement, p_offset, p_endOffset);
 							label_statement.setParent(stmt);
 							((IASTCompoundStatement) stmt).addStatement(label_statement);

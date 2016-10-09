@@ -78,6 +78,7 @@ public class ProCPreprocessor extends CPreprocessor {
 		fHeaderReplaces.put(ProCKeywords.rh_sqlda, ProCKeywords.rh_sqlda_h);
 	}
 
+	int previousToken = 0;
 	boolean isInsideProCBlock = false;
 	int endOfProCBlock = IToken.tSEMI;
 	@Override
@@ -86,7 +87,7 @@ public class ProCPreprocessor extends CPreprocessor {
 					throws OffsetLimitReachedException {
 		Token ppToken= fCurrentContext.currentLexerToken();
 		while (true) {
-			if (isInsideProCBlock) {
+			if (isInsideProCBlock && previousToken != IToken.tCOLON) {
 				/*
 				 * Pro*C
 				 */
@@ -165,6 +166,7 @@ public class ProCPreprocessor extends CPreprocessor {
 						ppToken.setType(tokenType);
 					}
 				}
+				previousToken = ppToken.getType();
 				return ppToken;
 
 			case IToken.tINTEGER:
@@ -190,7 +192,6 @@ public class ProCPreprocessor extends CPreprocessor {
 					;
 				}
 
-//TODO When only the exec, it is not treated as Pro*C block. (int exec = 0;)
 				tokenExec.setNext(ppToken);
 
 				final int ppt = fProCKeywords.get(ppToken.getCharImage());
@@ -233,12 +234,11 @@ public class ProCPreprocessor extends CPreprocessor {
 					}
 					break;
 
-//TODO When only "exec", it is not treated as Pro*C block. (int exec = 0;)
-//				default:
-//					tokenExec.setType(IToken.tIDENTIFIER);
-//					ppToken = tokenExec;
-//					continue;
+				default:
+					tokenExec.setType(IToken.tIDENTIFIER);
+					ppToken = tokenExec;
 				}
+				previousToken = tokenExec.getType();
 				return tokenExec;	// return "EXEC"
 
 			case IProCToken.tEXECUTE:
@@ -257,6 +257,7 @@ public class ProCPreprocessor extends CPreprocessor {
 					endOfProCBlock = IProCToken.tEND_EXEC;
 					break;
 				}
+				previousToken = tokenExecute.getType();
 				return tokenExecute;
 			}
 
@@ -273,8 +274,8 @@ public class ProCPreprocessor extends CPreprocessor {
 					}
 				}
 			}
-
 			fCurrentContext.nextPPToken();
+			previousToken = ppToken.getType();
 			return ppToken;
 		}
 	}

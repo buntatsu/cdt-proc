@@ -6,6 +6,7 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTLabelStatement;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -19,6 +20,7 @@ import org.eclipse.cdt.core.parser.ParserMode;
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode;
 import org.eclipse.cdt.internal.core.dom.parser.BacktrackException;
 import org.eclipse.cdt.internal.core.dom.parser.DeclarationOptions;
+import org.eclipse.cdt.internal.core.dom.parser.c.CASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.c.GNUCSourceParser;
 
 @SuppressWarnings("restriction")
@@ -112,6 +114,16 @@ public class ProCSourceParser extends GNUCSourceParser {
 
 				IASTExpression expression
 					= unaryExpression(IASTUnaryExpression.op_prefixIncr, CastExprCtx.eDirectlyInBExpr, null);
+
+				// ignore "bar" of ":foo(bar)"
+				IASTNode[] nodes = expression.getChildren();
+				for (int i = 0; i < nodes.length; i++) {
+					if (nodes[i] instanceof CASTFunctionCallExpression) {
+						CASTFunctionCallExpression fc = (CASTFunctionCallExpression) nodes[i];
+						fc.setArguments(null);
+					}
+				}
+
 				IASTExpressionStatement expressionStatement
 					= getNodeFactory().newExpressionStatement(expression);
 				setRange(expressionStatement, expression);
